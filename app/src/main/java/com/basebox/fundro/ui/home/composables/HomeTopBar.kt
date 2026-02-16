@@ -74,12 +74,18 @@ fun HomeTopBar(
                     badge = {
                         Badge(
                             containerColor = MaterialTheme.colorScheme.error
-                        )
+                        ) {
+                            Text(
+                                text = "3",
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                        }
                     }
                 ) {
                     Icon(
                         imageVector = Icons.Default.Notifications,
-                        contentDescription = "Notifications"
+                        contentDescription = "Notifications",
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }

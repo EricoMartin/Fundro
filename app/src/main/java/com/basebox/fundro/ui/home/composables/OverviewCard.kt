@@ -16,8 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.basebox.fundro.core.util.toRelativeTime
 import com.basebox.fundro.domain.model.Group
-import com.basebox.fundro.ui.home.OverviewItem
+import com.basebox.fundro.ui.home.composables.OverviewItem
 import com.basebox.fundro.ui.theme.FundroGreen
 import com.basebox.fundro.ui.theme.FundroTextSecondary
 
@@ -31,6 +32,17 @@ fun OverviewCard(
     val totalPending = allGroups.filter { it.status == "OPEN" }.sumOf { it.totalCollected }
     val totalPooled = allGroups.sumOf { it.totalCollected }
 
+    val activePoolsCount = allGroups.filter {
+        it.status.uppercase() in listOf("OPEN", "FUNDED")
+    }.size
+
+    // Get most recent activity
+    val mostRecentActivity = allGroups
+        .maxByOrNull { it.createdAt }
+        ?.createdAt
+        ?.toRelativeTime()
+        ?: "No activity yet"
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -38,6 +50,9 @@ fun OverviewCard(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 2.dp
         )
     ) {
         Column(
@@ -82,7 +97,12 @@ fun OverviewCard(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Across ${allGroups.size} active pools • Last activity: 2 hours ago",
+                text = "Across $activePoolsCount active ${if (activePoolsCount == 1) "pool" else "pools"}",
+                style = MaterialTheme.typography.bodySmall,
+                color = FundroTextSecondary
+            )
+            Text(
+                text = "Last activity: $mostRecentActivity",
                 style = MaterialTheme.typography.bodySmall,
                 color = FundroTextSecondary
             )

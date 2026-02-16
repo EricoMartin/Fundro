@@ -3,6 +3,7 @@ package com.basebox.fundro.data.repository
 import com.basebox.fundro.core.network.ApiResult
 import com.basebox.fundro.data.remote.api.GroupApi
 import com.basebox.fundro.domain.model.Group
+import com.basebox.fundro.domain.model.GroupMember
 import com.basebox.fundro.domain.model.Owner
 import com.basebox.fundro.domain.repository.GroupRepository
 import kotlinx.coroutines.Dispatchers
@@ -139,6 +140,39 @@ class GroupRepositoryImpl @Inject constructor(
                 emit(ApiResult.Success(group))
             } else {
                 emit(ApiResult.Error("Failed to fetch group details"))
+            }
+        } catch (e: Exception) {
+            emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
+        }
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun getGroupMembers(groupId: String): Flow<ApiResult<List<GroupMember>>> = flow {
+        emit(ApiResult.Loading)
+
+        try {
+            val response = groupApi.getGroupMembers(groupId)
+
+            if (response.isSuccessful && response.body() != null) {
+                val membersResponse = response.body()!!
+                val members = membersResponse.map { memberResponse ->
+                    GroupMember(
+                        id = memberResponse.id,
+                        userId = memberResponse.userId,
+                        username = memberResponse.username,
+                        fullName = memberResponse.fullName,
+                        status = memberResponse.status,
+                        expectedAmount = memberResponse.expectedAmount,
+                        paidAmount = memberResponse.paidAmount,
+                        invitedAt = memberResponse.invitedAt,
+                        joinedAt = memberResponse.joinedAt,
+                        paidAt = memberResponse.paidAt
+                    )
+                }
+
+                emit(ApiResult.Success(members))
+                Timber.d("Fetched ${members.size} members for group $groupId")
+            } else {
+                emit(ApiResult.Error("Failed to fetch group members"))
             }
         } catch (e: Exception) {
             emit(ApiResult.Error("Network error: ${e.localizedMessage}"))

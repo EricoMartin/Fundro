@@ -1,5 +1,6 @@
 package com.basebox.fundro.data.remote.api
 
+import com.basebox.fundro.data.remote.dto.response.GroupMemberResponse
 import com.basebox.fundro.data.remote.dto.response.GroupResponse
 import com.basebox.fundro.data.remote.dto.response.GroupsPageResponse
 import retrofit2.Response
@@ -25,4 +26,9 @@ interface GroupApi {
     suspend fun getGroupById(
         @Path("groupId") groupId: String
     ): Response<GroupResponse>
+
+    @GET("groups/{groupId}/members")
+    suspend fun getGroupMembers(
+        @Path("groupId") groupId: String
+    ): Response<List<GroupMemberResponse>>
 }

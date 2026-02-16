@@ -15,10 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.basebox.fundro.ui.components.EmptyState
 import com.basebox.fundro.ui.components.GroupCard
-import com.basebox.fundro.ui.home.FilterTabs
+import com.basebox.fundro.ui.home.composables.FilterTabs
 import com.basebox.fundro.ui.home.HomeTab
 import com.basebox.fundro.ui.home.HomeUiState
-import com.basebox.fundro.ui.home.OverviewCard
+import com.basebox.fundro.ui.home.composables.OverviewCard
 
 
 @Composable
@@ -43,6 +43,8 @@ fun HomeContent(
         // Filter Tabs
         FilterTabs(
             selectedTab = uiState.selectedTab,
+            myGroupsCount = uiState.myGroups.size,
+            participatingCount = uiState.participatingGroups.size,
             onTabSelected = onTabSelected
         )
 
@@ -57,7 +59,11 @@ fun HomeContent(
 
         if (groups.isEmpty()) {
             EmptyState(
-                title = "No groups yet",
+                title = when (uiState.selectedTab) {
+                    HomeTab.ALL -> "No groups yet"
+                    HomeTab.OWNED -> "No owned groups"
+                    HomeTab.PARTICIPATING -> "Not participating in any groups"
+                },
                 message = when (uiState.selectedTab) {
                     HomeTab.ALL -> "Create your first group to get started"
                     HomeTab.OWNED -> "You haven't created any groups yet"
