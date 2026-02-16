@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Fundro</string>
+    <string name="default_notification_channel_id">general_notifications</string>
+
+    <!-- API Error Messages -->
+    <string name="error_network">Network connection failed. Please check your internet.</string>
+    <string name="error_server">Server error. Please try again later.</string>
+    <string name="error_unauthorized">Session expired. Please login again.</string>
+    <string name="error_unknown">Something went wrong. Please try again.</string>
+
+    <!-- Financial Messages -->
+    <string name="currency_symbol">₦</string>
+    <string name="confirm_payment_title">Confirm Payment</string>
+    <string name="confirm_payment_message">Are you sure you want to pay %1$s?</string>
+</resources>
