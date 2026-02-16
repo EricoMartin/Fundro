@@ -15,10 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.basebox.fundro.ui.auth.login.LoginScreen
 import com.basebox.fundro.ui.auth.register.RegisterScreen
+import com.basebox.fundro.ui.group.detail.GroupDetailScreen
 import com.basebox.fundro.ui.home.HomeScreen
 import com.basebox.fundro.ui.onboarding.OnboardingScreen
 import com.basebox.fundro.ui.splash.SplashScreen
@@ -63,6 +66,19 @@ class MainActivity : ComponentActivity() {
 
                         composable("home") {
                             HomeScreen(navController = navController)
+                        }
+
+                        composable(
+                            route = "group/{groupId}",
+                            arguments = listOf(
+                                navArgument("groupId") { type = NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            val groupId = backStackEntry.arguments?.getString("groupId") ?: return@composable
+                            GroupDetailScreen(
+                                navController = navController,
+                                groupId = groupId
+                            )
                         }
                     }
                 }

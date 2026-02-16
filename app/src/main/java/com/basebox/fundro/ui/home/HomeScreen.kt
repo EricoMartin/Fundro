@@ -105,8 +105,7 @@ fun HomeScreen(
                         uiState = uiState,
                         onTabSelected = viewModel::selectTab,
                         onGroupClick = { groupId ->
-                            // TODO: Navigate to group detail
-                            // navController.navigate("group/$groupId")
+                            navController.navigate("group/$groupId")
                         }
                     )
                 }
