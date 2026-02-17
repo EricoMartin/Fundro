@@ -33,6 +33,7 @@ class SecureStorage @Inject constructor(
         private const val KEY_USER_ID = "user_id"
         private const val KEY_USER_EMAIL = "user_email"
         private const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
+        private const val KEY_FCM_TOKEN = "fcm_token"
     }
 
     // Access Token (JWT)
@@ -75,6 +76,18 @@ class SecureStorage @Inject constructor(
 
     fun isOnboardingCompleted(): Boolean {
         return encryptedPrefs.getBoolean(KEY_ONBOARDING_COMPLETED, false)
+    }
+
+    // FCM Token
+    fun saveFcmToken(token: String) {
+        encryptedPrefs.edit().putString(KEY_FCM_TOKEN, token).apply()
+        Timber.d("FCM token saved")
+    }
+
+    fun getFcmToken(): String? = encryptedPrefs.getString(KEY_FCM_TOKEN, null)
+
+    fun clearFcmToken() {
+        encryptedPrefs.edit().remove(KEY_FCM_TOKEN).apply()
     }
 
     // Clear all data (logout)
