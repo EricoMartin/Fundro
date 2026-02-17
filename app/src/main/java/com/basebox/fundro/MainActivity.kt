@@ -27,6 +27,8 @@ import com.basebox.fundro.ui.home.HomeScreen
 import com.basebox.fundro.ui.onboarding.OnboardingScreen
 import com.basebox.fundro.ui.payment.initiate.PaymentScreen
 import com.basebox.fundro.ui.payment.verify.PaymentVerificationScreen
+import com.basebox.fundro.ui.profile.ProfileScreen
+import com.basebox.fundro.ui.profile.edit.EditProfileScreen
 import com.basebox.fundro.ui.splash.SplashScreen
 import com.basebox.fundro.ui.theme.FundroTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -130,6 +132,13 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 contributionId = contributionId
                             )
+                        }
+
+                        composable("profile") {
+                            ProfileScreen(navController = navController)
+                        }
+                        composable("profile/edit") {
+                            EditProfileScreen(navController = navController)
                         }
                     }
                 }

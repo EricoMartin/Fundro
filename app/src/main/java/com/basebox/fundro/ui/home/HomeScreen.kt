@@ -52,7 +52,7 @@ fun HomeScreen(
         topBar = {
             HomeTopBar(
                 userName = uiState.user?.fullName ?: "",
-                onProfileClick = { /* TODO: Navigate to profile */ },
+                onProfileClick = { navController.navigate("profile") },
                 onNotificationClick = { /* TODO: Navigate to notifications */ }
             )
         },
