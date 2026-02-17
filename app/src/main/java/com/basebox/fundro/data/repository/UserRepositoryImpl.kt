@@ -2,7 +2,10 @@ package com.basebox.fundro.data.repository
 
 import com.basebox.fundro.core.network.ApiResult
 import com.basebox.fundro.data.remote.api.UserApi
+import com.basebox.fundro.data.remote.dto.request.UpdateProfileRequest
+import com.basebox.fundro.data.remote.dto.response.getOrThrow
 import com.basebox.fundro.domain.model.SearchUser
+import com.basebox.fundro.domain.model.User
 import com.basebox.fundro.domain.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -39,6 +42,94 @@ class UserRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
             Timber.e(e, "Search users error")
+        }
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun getCurrentUser(): Flow<ApiResult<User>> = flow {
+        emit(ApiResult.Loading)
+
+        try {
+            val response = userApi.getCurrentUser()
+
+            if (response.isSuccessful && response.body() != null) {
+                val userResponse = response.body()!!.getOrThrow()
+                val user = User(
+                    id = userResponse.id,
+                    username = userResponse.username,
+                    fullName = userResponse.fullName,
+                    email = userResponse.email,
+                    phoneNumber = userResponse.phoneNumber,
+                    role = userResponse.role,
+                    kycStatus = userResponse.kycStatus,
+                    isActive = userResponse.isActive,
+                    bankName = userResponse.bankName,
+                    accountHolderName = userResponse.accountHolderName,
+                    bankCode = userResponse.bankCode,
+                    bankAccountNumber = userResponse.bankAccountNumber,
+                    kycVerifiedAt = userResponse.kycVerifiedAt,
+                    createdAt = userResponse.createdAt
+                )
+                emit(ApiResult.Success(user))
+            } else {
+                val errorMessage = when (response.code()) {
+                    401 -> "Session expired. Please login again."
+                    else -> "Failed to get user info"
+                }
+                emit(ApiResult.Error(errorMessage, response.code()))
+            }
+        } catch (e: Exception) {
+            emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
+            Timber.e(e, "Get current user error")
+        }
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun updateProfile(
+        fullName: String?,
+        phoneNumber: String?,
+        username: String?
+    ): Flow<ApiResult<User>> = flow {
+        emit(ApiResult.Loading)
+
+        try {
+            val request = UpdateProfileRequest(
+                fullName = fullName,
+                phoneNumber = phoneNumber,
+                username = username
+            )
+
+            val response = userApi.updateProfile(request)
+
+            if (response.isSuccessful && response.body() != null) {
+                val userResponse = response.body()!!.getOrThrow()
+                val user = User(
+                    id = userResponse.id,
+                    username = userResponse.username,
+                    fullName = userResponse.fullName,
+                    email = userResponse.email,
+                    phoneNumber = userResponse.phoneNumber,
+                    role = userResponse.role,
+                    kycStatus = userResponse.kycStatus,
+                    isActive = userResponse.isActive,
+                    bankName = userResponse.bankName,
+                    accountHolderName = userResponse.accountHolderName,
+                    bankCode = userResponse.bankCode,
+                    bankAccountNumber = userResponse.bankAccountNumber,
+                    kycVerifiedAt = userResponse.kycVerifiedAt,
+                    createdAt = userResponse.createdAt
+                )
+                emit(ApiResult.Success(user))
+                Timber.d("Profile updated: ${user.fullName}")
+            } else {
+                val errorMessage = when (response.code()) {
+                    400 -> "Invalid profile data"
+                    409 -> "Username already taken"
+                    else -> "Failed to update profile: ${response.message()}"
+                }
+                emit(ApiResult.Error(errorMessage, response.code()))
+            }
+        } catch (e: Exception) {
+            emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
+            Timber.e(e, "Update profile error")
         }
     }.flowOn(Dispatchers.IO)
 }

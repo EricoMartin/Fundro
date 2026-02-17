@@ -2,7 +2,9 @@ package com.basebox.fundro.data.repository
 
 import com.basebox.fundro.core.network.ApiResult
 import com.basebox.fundro.data.remote.api.GroupApi
+import com.basebox.fundro.data.remote.dto.request.AddMembersRequest
 import com.basebox.fundro.data.remote.dto.request.CreateGroupRequest
+import com.basebox.fundro.data.remote.dto.response.getOrThrow
 import com.basebox.fundro.domain.model.Group
 import com.basebox.fundro.domain.model.GroupMember
 import com.basebox.fundro.domain.model.Owner
@@ -154,7 +156,7 @@ class GroupRepositoryImpl @Inject constructor(
             val response = groupApi.getGroupMembers(groupId)
 
             if (response.isSuccessful && response.body() != null) {
-                val membersResponse = response.body()!!
+                val membersResponse = response.body()!!.getOrThrow()
                 val members = membersResponse.map { memberResponse ->
                     GroupMember(
                         id = memberResponse.id,
@@ -266,7 +268,7 @@ class GroupRepositoryImpl @Inject constructor(
             val response = groupApi.addMembers(groupId, request)
 
             if (response.isSuccessful && response.body() != null) {
-                val membersResponse = response.body()!!
+                val membersResponse = response.body()!!.getOrThrow()
                 val members = membersResponse.map { memberResponse ->
                     GroupMember(
                         id = memberResponse.id,

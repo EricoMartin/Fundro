@@ -2,6 +2,7 @@ package com.basebox.fundro.data.remote.api
 
 import com.basebox.fundro.data.remote.dto.request.LoginRequest
 import com.basebox.fundro.data.remote.dto.request.RegisterRequest
+import com.basebox.fundro.data.remote.dto.response.ApiResponse
 import com.basebox.fundro.data.remote.dto.response.AuthResponse
 import com.basebox.fundro.data.remote.dto.response.RegisterResponse
 import com.basebox.fundro.data.remote.dto.response.UserResponse
@@ -23,5 +24,5 @@ interface AuthApi {
     ): Response<AuthResponse>
 
     @GET("users/me")
-    suspend fun getCurrentUser(): Response<UserResponse>
+    suspend fun getCurrentUser(): Response<ApiResponse<UserResponse>>
 }

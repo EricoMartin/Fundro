@@ -15,7 +15,9 @@ data class User(
     val bankName: String?,
     val accountHolderName: String?,
     val paystackRecipientCode: String = "",
-    val kycRejectionReason: String = ""
+    val kycRejectionReason: String = "",
+    val createdAt: String,
+    val kycVerifiedAt: String? = null
 )
 
 

@@ -1,4 +1,13 @@
 package com.basebox.fundro.data.remote.dto.request
 
-class AddMembersRequest {
-}
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
+data class AddMembersRequest(
+    @Json(name = "userIds")
+    val userIds: List<String>,
+
+    @Json(name = "expectedAmount")
+    val expectedAmount: Double?
+)

@@ -4,6 +4,7 @@ import com.basebox.fundro.BuildConfig
 import com.basebox.fundro.data.remote.api.AuthApi
 import com.basebox.fundro.data.remote.api.GroupApi
 import com.basebox.fundro.data.remote.api.GroupMemberApi
+import com.basebox.fundro.data.remote.api.PaymentApi
 import com.basebox.fundro.data.remote.api.UserApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -87,5 +88,11 @@ object NetworkModule {
     @Singleton
     fun provideUserApi(retrofit: Retrofit): UserApi {
         return retrofit.create(UserApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providePaymentApi(retrofit: Retrofit): PaymentApi {
+        return retrofit.create(PaymentApi::class.java)
     }
 }

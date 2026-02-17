@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.os.Build
 import androidx.core.content.ContextCompat
 import co.paystack.android.BuildConfig
+import com.basebox.fundro.core.payment.PaystackHelper
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -19,6 +20,9 @@ class FundroApplication : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
+
+        // Initialize Paystack SDK
+        PaystackHelper.initialize(com.basebox.fundro.BuildConfig.PAYSTACK_PUBLIC_KEY)
 
         // Create notification channels
         createNotificationChannels()

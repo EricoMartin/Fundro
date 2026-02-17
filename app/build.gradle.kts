@@ -32,8 +32,7 @@ android {
         // For physical device, use your computer's IP:
          buildConfigField("String", "BASE_URL", "\"http://192.168.1.4:8088/api/\"")
 
-        // Paystack Public Key (get from Paystack dashboard)
-        buildConfigField("String", "PAYSTACK_PUBLIC_KEY", "\"pk_test_xxxxxxxxxxxxx\"")
+        buildConfigField("String", "PAYSTACK_PUBLIC_KEY", "\"pk_test_4965f30d0188da36b2ee4b1fb569a129b2c03082\"")
     }
 
     buildTypes {

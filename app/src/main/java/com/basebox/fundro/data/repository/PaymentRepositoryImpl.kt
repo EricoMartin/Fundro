@@ -3,6 +3,7 @@ package com.basebox.fundro.data.repository
 import com.basebox.fundro.core.network.ApiResult
 import com.basebox.fundro.data.remote.api.PaymentApi
 import com.basebox.fundro.data.remote.dto.request.InitiatePaymentRequest
+import com.basebox.fundro.data.remote.dto.response.getOrThrow
 import com.basebox.fundro.domain.model.PaymentInitiation
 import com.basebox.fundro.domain.model.PaymentVerification
 import com.basebox.fundro.domain.repository.PaymentRepository
@@ -32,7 +33,7 @@ class PaymentRepositoryImpl @Inject constructor(
             val response = paymentApi.initiatePayment(request)
 
             if (response.isSuccessful && response.body() != null) {
-                val paymentResponse = response.body()!!
+                val paymentResponse = response.body()!!.getOrThrow()
                 val paymentInitiation = PaymentInitiation(
                     contributionId = paymentResponse.contributionId,
                     authorizationUrl = paymentResponse.authorizationUrl,
@@ -70,7 +71,7 @@ class PaymentRepositoryImpl @Inject constructor(
             val response = paymentApi.verifyPayment(contributionId)
 
             if (response.isSuccessful && response.body() != null) {
-                val verificationResponse = response.body()!!
+                val verificationResponse = response.body()!!.getOrThrow()
                 val verification = PaymentVerification(
                     contributionId = verificationResponse.contributionId,
                     status = verificationResponse.status,

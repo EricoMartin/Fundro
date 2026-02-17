@@ -1,10 +1,6 @@
 package com.basebox.fundro.ui.group.detail
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -13,12 +9,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.basebox.fundro.ui.components.ErrorState
 import com.basebox.fundro.ui.group.detail.composables.GroupDetailContent
-import com.basebox.fundro.ui.group.enums.DetailTab
 import com.basebox.fundro.ui.theme.FundroTextSecondary
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -127,7 +121,7 @@ fun GroupDetailScreen(
                         uiState = uiState,
                         onTabSelected = viewModel::selectTab,
                         onContributeClick = {
-                            // TODO: Navigate to payment screen
+                            navController.navigate("payment/${uiState.group?.id}")
                         },
                         onAddMembersClick = {
                             navController.navigate("group/${uiState.group?.id}/add-members")

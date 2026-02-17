@@ -3,6 +3,7 @@ package com.basebox.fundro.data.remote.api
 import com.basebox.fundro.data.remote.dto.request.AddMemberRequest
 import com.basebox.fundro.data.remote.dto.request.AddMembersRequest
 import com.basebox.fundro.data.remote.dto.request.CreateGroupRequest
+import com.basebox.fundro.data.remote.dto.response.ApiResponse
 import com.basebox.fundro.data.remote.dto.response.GroupDataResponse
 import com.basebox.fundro.data.remote.dto.response.GroupMemberResponse
 import com.basebox.fundro.data.remote.dto.response.GroupResponse
@@ -37,7 +38,7 @@ interface GroupApi {
     @GET("groups/{groupId}/members")
     suspend fun getGroupMembers(
         @Path("groupId") groupId: String
-    ): Response<List<GroupMemberResponse>>
+    ): Response<ApiResponse<List<GroupMemberResponse>>>
 
     @POST("groups")
     suspend fun createGroup(
@@ -48,11 +49,11 @@ interface GroupApi {
     suspend fun addMember(
         @Path("groupId") groupId: String,
         @Body request: AddMemberRequest
-    ): Response<GroupMemberResponse>
+    ): Response<ApiResponse<GroupMemberResponse>>
 
     @POST("groups/{groupId}/members")
     suspend fun addMembers(
         @Path("groupId") groupId: String,
         @Body request: AddMembersRequest
-    ): Response<List<GroupMemberResponse>>
+    ): Response<ApiResponse<List<GroupMemberResponse>>>
 }
