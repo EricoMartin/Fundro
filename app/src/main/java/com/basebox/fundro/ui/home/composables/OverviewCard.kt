@@ -43,6 +43,8 @@ fun OverviewCard(
         ?.toRelativeTime()
         ?: "No activity yet"
 
+    Spacer(modifier = Modifier.height(16.dp))
+
     Card(
         modifier = Modifier
             .fillMaxWidth()

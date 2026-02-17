@@ -28,7 +28,7 @@ import com.basebox.fundro.core.util.toNaira
 import com.basebox.fundro.domain.model.Group
 import com.basebox.fundro.ui.components.ProgressSection
 import com.basebox.fundro.ui.components.StatusBadge
-import com.basebox.fundro.ui.group.detail.MetadataItem
+import com.basebox.fundro.ui.group.detail.composables.MetadataItem
 import com.basebox.fundro.ui.theme.FundroTextSecondary
 
 @Composable

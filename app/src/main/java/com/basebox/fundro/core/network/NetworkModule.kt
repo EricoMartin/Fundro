@@ -4,6 +4,7 @@ import com.basebox.fundro.BuildConfig
 import com.basebox.fundro.data.remote.api.AuthApi
 import com.basebox.fundro.data.remote.api.GroupApi
 import com.basebox.fundro.data.remote.api.GroupMemberApi
+import com.basebox.fundro.data.remote.api.UserApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -80,5 +81,11 @@ object NetworkModule {
     @Singleton
     fun provideGroupMemberApi(retrofit: Retrofit): GroupMemberApi {
         return retrofit.create(GroupMemberApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserApi(retrofit: Retrofit): UserApi {
+        return retrofit.create(UserApi::class.java)
     }
 }

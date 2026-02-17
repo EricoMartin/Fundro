@@ -176,6 +176,9 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
 
+    // Google Accompanist for FlowRow
+    implementation("com.google.accompanist:accompanist-flowlayout:0.34.0")
+
     // ========================================
     // LOCAL STORAGE (ROOM DATABASE)
     // ========================================

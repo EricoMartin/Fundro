@@ -9,7 +9,7 @@ import com.basebox.fundro.core.util.toDeadlineText
 import com.basebox.fundro.core.util.toNaira
 import com.basebox.fundro.core.util.toRelativeTime
 import com.basebox.fundro.domain.model.Group
-import com.basebox.fundro.ui.group.detail.DetailInfoCard
+import com.basebox.fundro.ui.group.detail.composables.DetailInfoCard
 
 
 @Composable

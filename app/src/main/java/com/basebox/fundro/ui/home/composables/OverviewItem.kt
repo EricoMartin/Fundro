@@ -25,7 +25,7 @@ fun OverviewItem(
     Column(modifier = modifier) {
         Text(
             text = amount.toCompactNaira(),
-            style = MaterialTheme.typography.titleLarge.copy(
+            style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Bold
             ),
             color = textColor

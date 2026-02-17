@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import com.basebox.fundro.domain.model.GroupMember
 import com.basebox.fundro.ui.components.EmptyState
 import com.basebox.fundro.ui.components.MemberListItem
-import com.basebox.fundro.ui.group.detail.MembersSummaryCard
 
 
 @Composable

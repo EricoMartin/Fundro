@@ -58,7 +58,7 @@ fun HomeScreen(
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { /* TODO: Navigate to create group */ },
+                onClick = { navController.navigate("create-group") },
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Add,

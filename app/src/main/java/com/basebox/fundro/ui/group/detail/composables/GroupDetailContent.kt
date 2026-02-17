@@ -9,13 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.basebox.fundro.ui.group.detail.ActionButtonsRow
-import com.basebox.fundro.ui.group.detail.ActivityTab
-import com.basebox.fundro.ui.group.detail.DetailTabs
-import com.basebox.fundro.ui.group.detail.DetailsTab
 import com.basebox.fundro.ui.group.detail.GroupDetailUiState
-import com.basebox.fundro.ui.group.detail.GroupSummaryCard
-import com.basebox.fundro.ui.group.detail.MembersTab
 import com.basebox.fundro.ui.group.enums.DetailTab
 
     @Composable

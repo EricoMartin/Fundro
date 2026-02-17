@@ -21,7 +21,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.basebox.fundro.ui.auth.login.LoginScreen
 import com.basebox.fundro.ui.auth.register.RegisterScreen
+import com.basebox.fundro.ui.group.create.CreateGroupScreen
 import com.basebox.fundro.ui.group.detail.GroupDetailScreen
+import com.basebox.fundro.ui.group.members.AddMembersScreen
 import com.basebox.fundro.ui.home.HomeScreen
 import com.basebox.fundro.ui.onboarding.OnboardingScreen
 import com.basebox.fundro.ui.splash.SplashScreen
@@ -68,14 +70,33 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(navController = navController)
                         }
 
+                        composable("create-group") {
+                            CreateGroupScreen(navController = navController)
+                        }
+
                         composable(
                             route = "group/{groupId}",
                             arguments = listOf(
                                 navArgument("groupId") { type = NavType.StringType }
                             )
                         ) { backStackEntry ->
-                            val groupId = backStackEntry.arguments?.getString("groupId") ?: return@composable
+                            val groupId =
+                                backStackEntry.arguments?.getString("groupId") ?: return@composable
                             GroupDetailScreen(
+                                navController = navController,
+                                groupId = groupId
+                            )
+                        }
+
+                        composable(
+                            route = "group/{groupId}/add-members",
+                            arguments = listOf(
+                                navArgument("groupId") { type = NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            val groupId =
+                                backStackEntry.arguments?.getString("groupId") ?: return@composable
+                            AddMembersScreen(
                                 navController = navController,
                                 groupId = groupId
                             )

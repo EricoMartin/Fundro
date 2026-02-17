@@ -130,7 +130,7 @@ fun GroupDetailScreen(
                             // TODO: Navigate to payment screen
                         },
                         onAddMembersClick = {
-                            // TODO: Navigate to add members screen
+                            navController.navigate("group/${uiState.group?.id}/add-members")
                         },
                         onViewDetailsClick = {
                             // TODO: Show full details

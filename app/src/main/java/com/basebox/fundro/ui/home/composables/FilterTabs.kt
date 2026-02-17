@@ -56,13 +56,13 @@ fun FilterTabs(
                                 HomeTab.OWNED -> "Owned"
                                 HomeTab.PARTICIPATING -> "Participating"
                             },
-                            style = MaterialTheme.typography.labelLarge.copy(
+                            style = MaterialTheme.typography.labelMedium.copy(
                                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
                             )
                         )
 
                         if (count > 0) {
-                            Spacer(modifier = Modifier.width(6.dp))
+                            Spacer(modifier = Modifier.width(12.dp))
 
                             Surface(
                                 shape = CircleShape,

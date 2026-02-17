@@ -3,9 +3,11 @@ package com.basebox.fundro.di
 import com.basebox.fundro.data.repository.AuthRepositoryImpl
 import com.basebox.fundro.data.repository.GroupMemberRepositoryImpl
 import com.basebox.fundro.data.repository.GroupRepositoryImpl
+import com.basebox.fundro.data.repository.UserRepositoryImpl
 import com.basebox.fundro.domain.repository.AuthRepository
 import com.basebox.fundro.domain.repository.GroupMemberRepository
 import com.basebox.fundro.domain.repository.GroupRepository
+import com.basebox.fundro.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -33,4 +35,10 @@ abstract class RepositoryModule {
     abstract fun bindGroupMemberRepository(
         groupMemberRepositoryImpl: GroupMemberRepositoryImpl
     ): GroupMemberRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserRepository(
+        userRepositoryImpl: UserRepositoryImpl
+    ): UserRepository
 }

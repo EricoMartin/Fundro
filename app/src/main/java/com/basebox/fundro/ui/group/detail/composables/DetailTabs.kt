@@ -27,7 +27,7 @@ fun DetailTabs(
             )
         }
     ) {
-        DetailTab.values().forEach { tab ->
+        DetailTab.entries.forEach { tab ->
             Tab(
                 selected = selectedTab == tab,
                 onClick = { onTabSelected(tab) },

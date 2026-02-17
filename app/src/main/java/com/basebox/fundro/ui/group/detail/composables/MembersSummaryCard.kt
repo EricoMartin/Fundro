@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.basebox.fundro.domain.model.GroupMember
-import com.basebox.fundro.ui.group.detail.SummaryItem
 import com.basebox.fundro.ui.theme.FundroGreen
 import com.basebox.fundro.ui.theme.FundroOrange
 

@@ -44,7 +44,7 @@ fun ActionButton(
             }
             Text(
                 text = text,
-                style = MaterialTheme.typography.labelLarge.copy(
+                style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.SemiBold
                 )
             )
@@ -71,7 +71,7 @@ fun ActionButton(
             }
             Text(
                 text = text,
-                style = MaterialTheme.typography.labelLarge.copy(
+                style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.SemiBold
                 )
             )
