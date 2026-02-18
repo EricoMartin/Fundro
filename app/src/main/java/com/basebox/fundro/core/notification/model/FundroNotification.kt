@@ -19,7 +19,7 @@ data class FundroNotification(
     fun getIcon(): ImageVector = when (type) {
         NotificationType.PAYMENT_RECEIVED,
         NotificationType.PAYMENT_CONFIRMED -> Icons.Default.Payment
-        NotificationType.PAYMENT_FAILED -> Icons.Default.PaymentSharp
+        NotificationType.PAYMENT_FAILED -> Icons.Default.GppBad
         NotificationType.GROUP_CREATED -> Icons.Default.Group
         NotificationType.GROUP_FUNDED -> Icons.Default.AccountBalance
         NotificationType.GROUP_RELEASED -> Icons.Default.CheckCircle

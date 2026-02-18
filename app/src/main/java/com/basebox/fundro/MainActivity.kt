@@ -24,6 +24,7 @@ import com.basebox.fundro.ui.group.create.CreateGroupScreen
 import com.basebox.fundro.ui.group.detail.GroupDetailScreen
 import com.basebox.fundro.ui.group.members.AddMembersScreen
 import com.basebox.fundro.ui.home.HomeScreen
+import com.basebox.fundro.ui.notification.NotificationsScreen
 import com.basebox.fundro.ui.onboarding.OnboardingScreen
 import com.basebox.fundro.ui.payment.initiate.PaymentScreen
 import com.basebox.fundro.ui.payment.verify.PaymentVerificationScreen
@@ -139,6 +140,10 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("profile/edit") {
                             EditProfileScreen(navController = navController)
+                        }
+
+                        composable("notifications") {
+                            NotificationsScreen(navController = navController)
                         }
                     }
                 }

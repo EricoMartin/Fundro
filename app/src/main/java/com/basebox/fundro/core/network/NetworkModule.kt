@@ -1,9 +1,13 @@
 package com.basebox.fundro.core.network
 
+import android.content.Context
 import com.basebox.fundro.BuildConfig
+import com.basebox.fundro.core.notification.NotificationChannelManager
+import com.basebox.fundro.core.notification.NotificationHelper
 import com.basebox.fundro.data.remote.api.AuthApi
 import com.basebox.fundro.data.remote.api.GroupApi
 import com.basebox.fundro.data.remote.api.GroupMemberApi
+import com.basebox.fundro.data.remote.api.NotificationApi
 import com.basebox.fundro.data.remote.api.PaymentApi
 import com.basebox.fundro.data.remote.api.UserApi
 import com.squareup.moshi.Moshi
@@ -11,6 +15,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -94,5 +99,30 @@ object NetworkModule {
     @Singleton
     fun providePaymentApi(retrofit: Retrofit): PaymentApi {
         return retrofit.create(PaymentApi::class.java)
+    }
+
+    // Add inside NetworkModule:
+
+    @Provides
+    @Singleton
+    fun provideNotificationApi(retrofit: Retrofit): NotificationApi {
+        return retrofit.create(NotificationApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotificationChannelManager(
+        @ApplicationContext context: Context
+    ): NotificationChannelManager {
+        return NotificationChannelManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotificationHelper(
+        @ApplicationContext context: Context,
+        channelManager: NotificationChannelManager
+    ): NotificationHelper {
+        return NotificationHelper(context, channelManager)
     }
 }

@@ -7,4 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="fundro_primary">#2E5BCC</color>
+    <color name="fundro_green">#10B981</color>
+    <color name="fundro_orange">#F59E0B</color>
+    <color name="fundro_red">#EF4444</color>
 </resources>

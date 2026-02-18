@@ -6,12 +6,18 @@ import android.app.NotificationManager
 import android.os.Build
 import androidx.core.content.ContextCompat
 import co.paystack.android.BuildConfig
+import com.basebox.fundro.core.notification.NotificationChannelManager
 import com.basebox.fundro.core.payment.PaystackHelper
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltAndroidApp
 class FundroApplication : Application() {
+
+    @Inject
+    lateinit var notificationChannelManager: NotificationChannelManager
 
     override fun onCreate() {
         super.onCreate()
@@ -21,9 +27,18 @@ class FundroApplication : Application() {
             Timber.plant(Timber.DebugTree())
         }
 
+        // Create notification channels (must be done early)
+        notificationChannelManager.createAllChannels()
+
         // Initialize Paystack SDK
         PaystackHelper.initialize(com.basebox.fundro.BuildConfig.PAYSTACK_PUBLIC_KEY)
 
+        // Log FCM token in debug
+        if (BuildConfig.DEBUG) {
+            FirebaseMessaging.getInstance().token.addOnSuccessListener { token ->
+                Timber.d("FCM Token: $token")
+            }
+        }
         // Create notification channels
         createNotificationChannels()
 
