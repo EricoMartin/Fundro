@@ -13,9 +13,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.basebox.fundro.core.ui.components.EmptyState
-import com.basebox.fundro.core.ui.components.notification.FundroNotificationDialog
-import com.basebox.fundro.core.ui.components.notification.NotificationItem
+import com.basebox.fundro.ui.components.EmptyState
+import com.basebox.fundro.ui.components.notification.FundroNotificationDialog
+import com.basebox.fundro.ui.components.notification.NotificationItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

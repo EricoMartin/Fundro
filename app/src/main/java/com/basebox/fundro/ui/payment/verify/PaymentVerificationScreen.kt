@@ -71,9 +71,13 @@ fun PaymentVerificationScreen(
                         paidAt = uiState.paidAt,
                         onDone = {
                             // Navigate back to home or group detail
-                            navController.navigate("home") {
-                                popUpTo(0) { inclusive = true }
-                            }
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("payment_completed", true)
+                            navController.popBackStack("group/{groupId}", inclusive = false)
+//                            navController.navigate("home") {
+//                                popUpTo(0) { inclusive = true }
+//                            }
                         }
                     )
                 }

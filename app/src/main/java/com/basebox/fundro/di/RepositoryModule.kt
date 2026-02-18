@@ -3,11 +3,13 @@ package com.basebox.fundro.di
 import com.basebox.fundro.data.repository.AuthRepositoryImpl
 import com.basebox.fundro.data.repository.GroupMemberRepositoryImpl
 import com.basebox.fundro.data.repository.GroupRepositoryImpl
+import com.basebox.fundro.data.repository.NotificationRepositoryImpl
 import com.basebox.fundro.data.repository.PaymentRepositoryImpl
 import com.basebox.fundro.data.repository.UserRepositoryImpl
 import com.basebox.fundro.domain.repository.AuthRepository
 import com.basebox.fundro.domain.repository.GroupMemberRepository
 import com.basebox.fundro.domain.repository.GroupRepository
+import com.basebox.fundro.domain.repository.NotificationRepository
 import com.basebox.fundro.domain.repository.PaymentRepository
 import com.basebox.fundro.domain.repository.UserRepository
 import dagger.Binds

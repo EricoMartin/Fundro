@@ -53,35 +53,35 @@
             </intent-filter>
 
             <!-- Deep links (for payment callbacks and invites) -->
-<!--            <intent-filter android:autoVerify="true">-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-<!--                &lt;!&ndash; Payment callback from Paystack &ndash;&gt;-->
-<!--                <data-->
-<!--                    android:scheme="fundro"-->
-<!--                    android:host="http://10.0.2.2:8080"-->
-<!--                    android:pathPrefix="/paystack/callback" />-->
+                <!-- Payment callback from Paystack -->
+                <data
+                    android:scheme="fundro"
+                    android:host="http://10.0.2.2:8080"
+                    android:pathPrefix="/paystack/callback" />
 
-<!--                &lt;!&ndash; Group invite links &ndash;&gt;-->
-<!--                <data-->
-<!--                    android:scheme="https"-->
-<!--                    android:host="fundro.app"-->
-<!--                    android:pathPrefix="/invite" />-->
-<!--            </intent-filter>-->
+                <!-- Group invite links -->
+                <data
+                    android:scheme="https"
+                    android:host="fundro.app"
+                    android:pathPrefix="/invite" />
+            </intent-filter>
         </activity>
 
         <!-- ========================================
              FIREBASE MESSAGING SERVICE
              ======================================== -->
-<!--        <service-->
-<!--            android:name=".core.notification.FundroFirebaseMessagingService"-->
-<!--            android:exported="false">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.google.firebase.MESSAGING_EVENT" />-->
-<!--            </intent-filter>-->
-<!--        </service>-->
+        <service
+            android:name=".core.notification.FundroFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <!-- Firebase default notification channel -->
         <meta-data

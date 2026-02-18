@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import com.basebox.fundro.R
 import com.basebox.fundro.core.notification.model.FundroNotification
 import com.basebox.fundro.core.notification.model.NotificationType
-import com.basebox.fundro.presentation.MainActivity
+import com.basebox.fundro.MainActivity
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton

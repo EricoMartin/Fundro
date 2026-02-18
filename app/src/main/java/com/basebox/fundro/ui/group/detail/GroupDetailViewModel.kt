@@ -32,6 +32,11 @@ class GroupDetailViewModel @Inject constructor(
         loadGroupMembers()
     }
 
+    fun refreshAfterPayment() {
+        loadGroupDetails(isRefreshing = false)
+        loadGroupMembers()
+    }
+
     fun loadGroupDetails(isRefreshing: Boolean = false) {
         viewModelScope.launch {
             getGroupDetailsUseCase(groupId).collect { result ->

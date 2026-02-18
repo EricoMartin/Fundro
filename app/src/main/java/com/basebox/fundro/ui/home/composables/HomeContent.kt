@@ -52,7 +52,7 @@ fun HomeContent(
 
         // Groups List
         val groups = when (uiState.selectedTab) {
-            HomeTab.ALL -> uiState.myGroups + uiState.participatingGroups
+            HomeTab.ALL -> (uiState.myGroups + uiState.participatingGroups).distinct()
             HomeTab.OWNED -> uiState.myGroups
             HomeTab.PARTICIPATING -> uiState.participatingGroups
         }

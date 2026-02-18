@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.core.content.ContextCompat
+import com.basebox.fundro.core.notification.model.NotificationType
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -82,23 +83,23 @@ class NotificationChannelManager @Inject constructor(
         }
     }
 
-    fun getChannelForType(type: com.basebox.fundro.core.notification.model.NotificationType): String {
+    fun getChannelForType(type: NotificationType): String {
         return when (type) {
-            com.basebox.fundro.core.notification.model.NotificationType.PAYMENT_RECEIVED,
-            com.basebox.fundro.core.notification.model.NotificationType.PAYMENT_CONFIRMED,
-            com.basebox.fundro.core.notification.model.NotificationType.PAYMENT_FAILED -> CHANNEL_PAYMENTS
+            NotificationType.PAYMENT_RECEIVED,
+            NotificationType.PAYMENT_CONFIRMED,
+            NotificationType.PAYMENT_FAILED -> CHANNEL_PAYMENTS
 
-            com.basebox.fundro.core.notification.model.NotificationType.GROUP_CREATED,
-            com.basebox.fundro.core.notification.model.NotificationType.GROUP_FUNDED,
-            com.basebox.fundro.core.notification.model.NotificationType.GROUP_RELEASED,
-            com.basebox.fundro.core.notification.model.NotificationType.GROUP_CANCELLED -> CHANNEL_GROUPS
+            NotificationType.GROUP_CREATED,
+            NotificationType.GROUP_FUNDED,
+            NotificationType.GROUP_RELEASED,
+            NotificationType.GROUP_CANCELLED -> CHANNEL_GROUPS
 
-            com.basebox.fundro.core.notification.model.NotificationType.MEMBER_INVITED,
-            com.basebox.fundro.core.notification.model.NotificationType.MEMBER_JOINED,
-            com.basebox.fundro.core.notification.model.NotificationType.MEMBER_PAID -> CHANNEL_MEMBERS
+            NotificationType.MEMBER_INVITED,
+            NotificationType.MEMBER_JOINED,
+            NotificationType.MEMBER_PAID -> CHANNEL_MEMBERS
 
-            com.basebox.fundro.core.notification.model.NotificationType.KYC_APPROVED,
-            com.basebox.fundro.core.notification.model.NotificationType.KYC_REJECTED -> CHANNEL_KYC
+            NotificationType.KYC_APPROVED,
+            NotificationType.KYC_REJECTED -> CHANNEL_KYC
 
             else -> CHANNEL_GENERAL
         }

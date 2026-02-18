@@ -2,6 +2,7 @@ package com.basebox.fundro.data.repository
 
 import com.basebox.fundro.core.network.ApiResult
 import com.basebox.fundro.data.remote.api.GroupMemberApi
+import com.basebox.fundro.data.remote.dto.response.getOrThrow
 import com.basebox.fundro.domain.model.GroupMember
 import com.basebox.fundro.domain.repository.GroupMemberRepository
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,7 @@ class GroupMemberRepositoryImpl @Inject constructor(
             val response = groupMemberApi.getGroupMembers(groupId)
 
             if (response.isSuccessful && response.body() != null) {
-                val members = response.body()!!.map { memberResponse ->
+                val members = response.body()!!.getOrThrow().map { memberResponse ->
                     GroupMember(
                         id = memberResponse.id,
                         userId = memberResponse.userId,

@@ -11,12 +11,3 @@ data class AddMemberRequest(
     @Json(name = "expectedAmount")
     val expectedAmount: Double?
 )
-
-@JsonClass(generateAdapter = true)
-data class AddMembersRequest(
-    @Json(name = "userIds")
-    val userIds: List<String>,
-
-    @Json(name = "expectedAmount")
-    val expectedAmount: Double?
-)

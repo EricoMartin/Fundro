@@ -26,7 +26,17 @@ fun GroupDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // Show error snackbar
+    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+    LaunchedEffect(savedStateHandle) {
+        savedStateHandle?.getStateFlow("payment_completed", false)?.collect { completed ->
+            if (completed) {
+                viewModel.refreshAfterPayment()
+                savedStateHandle["payment_completed"] = false
+            }
+        }
+    }
+
+            // Show error snackbar
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(uiState.error) {
         uiState.error?.let {

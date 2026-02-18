@@ -5,6 +5,7 @@ import com.basebox.fundro.core.security.SecureStorage
 import com.basebox.fundro.data.remote.api.AuthApi
 import com.basebox.fundro.data.remote.dto.request.LoginRequest
 import com.basebox.fundro.data.remote.dto.request.RegisterRequest
+import com.basebox.fundro.data.remote.dto.response.getOrThrow
 import com.basebox.fundro.domain.model.User
 import com.basebox.fundro.domain.repository.AuthRepository
 import kotlinx.coroutines.Dispatchers
@@ -73,7 +74,8 @@ class AuthRepositoryImpl @Inject constructor(
                     bankAccountNumber = userResponse.bankAccountNumber,
                     bankCode = userResponse.bankCode,
                     bankName = userResponse.bankName,
-                    accountHolderName = userResponse.accountHolderName
+                    accountHolderName = userResponse.accountHolderName,
+                    createdAt = userResponse.createdAt,
                 )
 
                 emit(ApiResult.Success(user))
@@ -133,7 +135,8 @@ class AuthRepositoryImpl @Inject constructor(
                     bankAccountNumber = userResponse.bankAccountNumber,
                     bankCode = userResponse.bankCode,
                     bankName = userResponse.bankName,
-                    accountHolderName = userResponse.accountHolderName
+                    accountHolderName = userResponse.accountHolderName,
+                    createdAt = userResponse.createdAt,
                 )
 
                 emit(ApiResult.Success(user))
@@ -161,7 +164,7 @@ class AuthRepositoryImpl @Inject constructor(
             val response = authApi.getCurrentUser()
 
             if (response.isSuccessful && response.body() != null) {
-                val userResponse = response.body()!!
+                val userResponse = response.body()!!.getOrThrow()
 
                 val user = User(
                     id = userResponse.id,
@@ -176,7 +179,8 @@ class AuthRepositoryImpl @Inject constructor(
                     bankAccountNumber = userResponse.bankAccountNumber,
                     bankCode = userResponse.bankCode,
                     bankName = userResponse.bankName,
-                    accountHolderName = userResponse.accountHolderName
+                    accountHolderName = userResponse.accountHolderName,
+                    createdAt = userResponse.createdAt,
                 )
 
                 emit(ApiResult.Success(user))
