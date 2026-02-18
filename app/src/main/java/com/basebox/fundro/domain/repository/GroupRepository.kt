@@ -11,6 +11,8 @@ interface GroupRepository {
     suspend fun getGroupById(groupId: String): Flow<ApiResult<Group>>
     suspend fun getGroupMembers(groupId: String): Flow<ApiResult<List<GroupMember>>>
 
+    suspend fun getInvitedGroups(page: Int = 0, size: Int = 20): Flow<ApiResult<List<Group>>>
+    suspend fun joinGroup(groupId: String): Flow<ApiResult<GroupMember>>
     suspend fun createGroup(
         name: String,
         description: String?,

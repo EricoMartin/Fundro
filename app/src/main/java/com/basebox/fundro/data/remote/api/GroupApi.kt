@@ -56,4 +56,15 @@ interface GroupApi {
         @Path("groupId") groupId: String,
         @Body request: AddMembersRequest
     ): Response<ApiResponse<List<GroupMemberResponse>>>
+
+    @POST("groups/{groupId}/join")
+    suspend fun joinGroup(
+        @Path("groupId") groupId: String
+    ): Response<ApiResponse<GroupMemberResponse>>
+
+    @GET("groups/invited")
+    suspend fun getInvitedGroups(
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 20
+    ): Response<GroupsPageResponse>
 }

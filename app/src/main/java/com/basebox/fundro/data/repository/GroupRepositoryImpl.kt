@@ -69,6 +69,37 @@ class GroupRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
+    override suspend fun joinGroup(groupId: String): Flow<ApiResult<GroupMember>> = flow {
+        emit(ApiResult.Loading)
+
+        try {
+            val response = groupApi.joinGroup(groupId)
+
+            if (response.isSuccessful && response.body() != null) {
+                val memberResponse = response.body()!!.getOrThrow()
+                val member = GroupMember(
+                    id = memberResponse.id,
+                    userId = memberResponse.userId,
+                    username = memberResponse.username,
+                    fullName = memberResponse.fullName,
+                    status = memberResponse.status,
+                    expectedAmount = memberResponse.expectedAmount,
+                    paidAmount = memberResponse.paidAmount,
+                    invitedAt = memberResponse.invitedAt,
+                    joinedAt = memberResponse.joinedAt,
+                    paidAt = memberResponse.paidAt
+                )
+
+                emit(ApiResult.Success(member))
+                Timber.d("Joined group successfully")
+            } else {
+                emit(ApiResult.Error("Failed to join group"))
+            }
+        } catch (e: Exception) {
+            emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
+        }
+    }.flowOn(Dispatchers.IO)
+
     override suspend fun getParticipatingGroups(page: Int, size: Int): Flow<ApiResult<List<Group>>> = flow {
         emit(ApiResult.Loading)
 
@@ -176,6 +207,47 @@ class GroupRepositoryImpl @Inject constructor(
                 Timber.d("Fetched ${members.size} members for group $groupId")
             } else {
                 emit(ApiResult.Error("Failed to fetch group members"))
+            }
+        } catch (e: Exception) {
+            emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
+        }
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun getInvitedGroups(page: Int, size: Int): Flow<ApiResult<List<Group>>> = flow {
+        emit(ApiResult.Loading)
+
+        try {
+            val response = groupApi.getInvitedGroups(page, size)
+
+            if (response.isSuccessful && response.body() != null) {
+                val groupsPage = response.body()!!
+                val groups = groupsPage.groups.map {
+                /* map to Group */
+                    Group(
+                        id = it.id,
+                        name = it.name,
+                        description = it.description,
+                        targetAmount = it.targetAmount,
+                        status = it.status,
+                        visibility = it.visibility ?: "PRIVATE",
+                        category = it.category,
+                        deadline = it.deadline,
+                        createdAt = it.createdAt,
+                        owner = Owner(
+                            id = it.owner.id,
+                            username = it.owner.username,
+                            fullName = it.owner.fullName,
+                            email = it.owner.email
+                        ),
+                        totalCollected = it.totalCollected,
+                        participantCount = it.participantCount,
+                        progressPercentage = it.progressPercentage,
+                        hasCurrentUserContributed = it.hasCurrentUserContributed
+                    )
+                }
+                emit(ApiResult.Success(groups))
+            } else {
+                emit(ApiResult.Error("Failed to fetch invited groups"))
             }
         } catch (e: Exception) {
             emit(ApiResult.Error("Network error: ${e.localizedMessage}"))

@@ -10,11 +10,13 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     val error: String? = null,
+    val invitedGroups: List<Group> = emptyList(),
     val selectedTab: HomeTab = HomeTab.ALL
 )
 
 enum class HomeTab {
     ALL,
     OWNED,
-    PARTICIPATING
+    PARTICIPATING,
+    INVITATIONS
 }

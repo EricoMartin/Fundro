@@ -6,6 +6,7 @@ import com.basebox.fundro.core.network.ApiResult
 import com.basebox.fundro.domain.usecase.GetCurrentUserUseCase
 import com.basebox.fundro.domain.usecase.GetMyGroupsUseCase
 import com.basebox.fundro.domain.usecase.GetUserGroupsUseCase
+import com.basebox.fundro.domain.usecase.JoinGroupUseCase
 import com.basebox.fundro.domain.usecase.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getUserGroupsUseCase: GetUserGroupsUseCase,
-    private val logoutUseCase: LogoutUseCase
+    private val logoutUseCase: LogoutUseCase,
+    private val joinGroupUseCase: JoinGroupUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -88,6 +90,24 @@ class HomeViewModel @Inject constructor(
                         }
                         Timber.e("Failed to load groups: ${result.message}")
                     }
+                }
+            }
+        }
+    }
+
+    fun joinGroup(groupId: String) {
+        viewModelScope.launch {
+            joinGroupUseCase(groupId).collect { result ->
+                when (result) {
+                    is ApiResult.Success -> {
+                        // Refresh groups to show updated status
+                        loadGroups()
+                        Timber.d("Joined group successfully")
+                    }
+                    is ApiResult.Error -> {
+                        _uiState.update { it.copy(error = result.message) }
+                    }
+                    is ApiResult.Loading -> {}
                 }
             }
         }

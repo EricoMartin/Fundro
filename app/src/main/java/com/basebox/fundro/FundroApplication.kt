@@ -5,7 +5,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import androidx.core.content.ContextCompat
-import co.paystack.android.BuildConfig
+import com.basebox.fundro.BuildConfig
+import co.paystack.android.PaystackSdk
 import com.basebox.fundro.core.notification.NotificationChannelManager
 import com.basebox.fundro.core.payment.PaystackHelper
 import com.google.firebase.messaging.FirebaseMessaging
@@ -22,6 +23,9 @@ class FundroApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        PaystackHelper.initialize(BuildConfig.PAYSTACK_PUBLIC_KEY)
+
+
         // Initialize Timber for logging
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
@@ -31,7 +35,13 @@ class FundroApplication : Application() {
         notificationChannelManager.createAllChannels()
 
         // Initialize Paystack SDK
-        PaystackHelper.initialize(com.basebox.fundro.BuildConfig.PAYSTACK_PUBLIC_KEY)
+//        try {
+//            PaystackSdk.initialize(applicationContext)
+//            PaystackSdk.setPublicKey(BuildConfig.PAYSTACK_PUBLIC_KEY)
+//            Timber.d("Paystack initialized with key: ${BuildConfig.PAYSTACK_PUBLIC_KEY.take(10)}...")
+//        } catch (e: Exception) {
+//            Timber.e(e, "Failed to initialize Paystack")
+//        }
 
         // Log FCM token in debug
         if (BuildConfig.DEBUG) {
