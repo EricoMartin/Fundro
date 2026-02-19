@@ -30,6 +30,7 @@ import com.basebox.fundro.ui.payment.initiate.PaymentScreen
 import com.basebox.fundro.ui.payment.verify.PaymentVerificationScreen
 import com.basebox.fundro.ui.profile.ProfileScreen
 import com.basebox.fundro.ui.profile.edit.EditProfileScreen
+import com.basebox.fundro.ui.profile.kyc.KycScreen
 import com.basebox.fundro.ui.splash.SplashScreen
 import com.basebox.fundro.ui.theme.FundroTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -140,6 +141,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("profile/edit") {
                             EditProfileScreen(navController = navController)
+                        }
+                        composable("profile/kyc") {
+                            KycScreen(navController = navController)
                         }
 
                         composable("notifications") {

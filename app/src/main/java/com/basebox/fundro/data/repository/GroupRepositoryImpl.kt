@@ -220,7 +220,7 @@ class GroupRepositoryImpl @Inject constructor(
             val response = groupApi.getInvitedGroups(page, size)
 
             if (response.isSuccessful && response.body() != null) {
-                val groupsPage = response.body()!!
+                val groupsPage = response.body()!!.getOrThrow()
                 val groups = groupsPage.groups.map {
                 /* map to Group */
                     Group(

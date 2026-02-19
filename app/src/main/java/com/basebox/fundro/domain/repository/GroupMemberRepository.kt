@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface GroupMemberRepository {
     suspend fun getGroupMembers(groupId: String): Flow<ApiResult<List<GroupMember>>>
+    suspend fun acceptGroupMembership(groupId: String, userId: String): Flow<ApiResult<GroupMember>>
 }

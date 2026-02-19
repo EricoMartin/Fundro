@@ -24,6 +24,7 @@ fun FilterTabs(
     selectedTab: HomeTab,
     myGroupsCount: Int,
     participatingCount: Int,
+    invitedCount: Int,
     onTabSelected: (HomeTab) -> Unit
 ) {
     ScrollableTabRow(
@@ -38,9 +39,10 @@ fun FilterTabs(
             val isSelected = selectedTab == tab
 
             val count = when (tab) {
-                HomeTab.ALL -> myGroupsCount + participatingCount
+                HomeTab.ALL -> myGroupsCount
                 HomeTab.OWNED -> myGroupsCount
                 HomeTab.PARTICIPATING -> participatingCount
+                HomeTab.INVITATIONS -> invitedCount
             }
 
             FilterChip(
@@ -55,6 +57,7 @@ fun FilterTabs(
                                 HomeTab.ALL -> "All"
                                 HomeTab.OWNED -> "Owned"
                                 HomeTab.PARTICIPATING -> "Participating"
+                                HomeTab.INVITATIONS -> "Invitations"
                             },
                             style = MaterialTheme.typography.labelMedium.copy(
                                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal

@@ -1,18 +1,50 @@
-package com.basebox.fundro.ui.auth.login
+package com.basebox.fundro.ui.profile.kyc
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -29,24 +61,13 @@ import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(
+fun KycScreen(
     navController: NavController,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: KycViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val loginSuccess by viewModel.loginSuccess.collectAsState()
     val focusManager = LocalFocusManager.current
 
-    // Navigate to home on successful login
-    LaunchedEffect(loginSuccess) {
-        if (loginSuccess) {
-            navController.navigate("home") {
-                popUpTo("login") { inclusive = true }
-            }
-        }
-    }
-
-    // Show error snackbar
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
@@ -59,7 +80,30 @@ fun LoginScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Verify KYC",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            )
+        }
     ) { padding ->
         Box(
             modifier = Modifier
@@ -75,9 +119,9 @@ fun LoginScreen(
                     .imePadding(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 Spacer(modifier = Modifier.height(48.dp))
 
-                // Logo/Icon
                 Surface(
                     modifier = Modifier.size(80.dp),
                     shape = RoundedCornerShape(20.dp),
@@ -96,9 +140,8 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Title
                 Text(
-                    text = "Welcome Back",
+                    text = "BVN Verification",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -109,23 +152,23 @@ fun LoginScreen(
 
                 // Subtitle
                 Text(
-                    text = "Sign in to continue",
+                    text = "Enter your details to verify your account",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-                // Email/Username TextField
                 OutlinedTextField(
-                    value = uiState.email,
-                    onValueChange = viewModel::onEmailOrUsernameChanged,
-                    label = { Text("Email or Username") },
-                    placeholder = { Text("Enter your email or username") },
+                    value = uiState.accountHolderName,
+                    onValueChange = viewModel::onFullNameChanged,
+                    label = { Text("Full Name") },
+                    placeholder = { Text("Enter your full name") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
+                        keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
@@ -141,28 +184,27 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Password TextField
                 OutlinedTextField(
-                    value = uiState.password,
-                    onValueChange = viewModel::onPasswordChanged,
-                    label = { Text("Password") },
-                    placeholder = { Text("Enter your password") },
+                    value = uiState.bvn,
+                    onValueChange = viewModel::onBvnChanged,
+                    label = { Text("BVN") },
+                    placeholder = { Text("Enter your BVN") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    visualTransformation = if (uiState.isPasswordVisible) {
+                    visualTransformation = if (uiState.isBvnVisible) {
                         VisualTransformation.None
                     } else {
                         PasswordVisualTransformation()
                     },
                     trailingIcon = {
-                        IconButton(onClick = viewModel::togglePasswordVisibility) {
+                        IconButton(onClick = viewModel::toggleBvnVisibility) {
                             Icon(
-                                imageVector = if (uiState.isPasswordVisible) {
+                                imageVector = if (uiState.isBvnVisible) {
                                     Icons.Default.VisibilityOff
                                 } else {
                                     Icons.Default.Visibility
                                 },
-                                contentDescription = if (uiState.isPasswordVisible) {
+                                contentDescription = if (uiState.isBvnVisible) {
                                     "Hide password"
                                 } else {
                                     "Show password"
@@ -175,9 +217,10 @@ fun LoginScreen(
                         imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) },
                         onDone = {
                             focusManager.clearFocus()
-                            viewModel.login()
+                            viewModel.verifyKyc()
                         }
                     ),
                     enabled = !uiState.isLoading,
@@ -188,28 +231,60 @@ fun LoginScreen(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                // Forgot Password
-                Row(
+                OutlinedTextField(
+                    value = uiState.accountNumber,
+                    onValueChange = viewModel::onAccountNumberChanged,
+                    label = { Text("Account Number") },
+                    placeholder = { Text("Enter your account number") },
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Text(
-                        text = "Forgot Password?",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .clickable { /* TODO: Implement forgot password */ }
-                            .padding(8.dp)
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    enabled = !uiState.isLoading,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
                     )
-                }
+                )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                // Login Button
+                OutlinedTextField(
+                    value = uiState.bankCode,
+                    onValueChange = viewModel::onBankCodeChanged,
+                    label = { Text("Bank Code") },
+                    placeholder = { Text("Enter your bank code") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                            viewModel.verifyKyc() }
+                    ),
+                    enabled = !uiState.isLoading,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
                 Button(
-                    onClick = viewModel::login,
+                    onClick = viewModel::verifyKyc,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
@@ -227,7 +302,7 @@ fun LoginScreen(
                         )
                     } else {
                         Text(
-                            text = "Sign In",
+                            text = "Verify BVN",
                             style = MaterialTheme.typography.labelLarge.copy(
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -242,43 +317,20 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Divider(modifier = Modifier.weight(1f))
-                    Text(
-                        text = "  OR  ",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    HorizontalDivider(
+                        modifier = Modifier.weight(1f),
+                        thickness = DividerDefaults.Thickness,
+                        color = DividerDefaults.color
                     )
-                    Divider(modifier = Modifier.weight(1f))
+
+                    HorizontalDivider(
+                        modifier = Modifier.weight(1f),
+                        thickness = DividerDefaults.Thickness,
+                        color = DividerDefaults.color
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
-
-                // Sign Up Link
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Don't have an account? ",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = "Sign Up",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.SemiBold
-                        ),
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .clickable {
-                                navController.navigate("register")
-                            }
-                            .padding(4.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
             }
         }
     }

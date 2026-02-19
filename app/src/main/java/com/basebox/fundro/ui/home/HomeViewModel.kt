@@ -3,7 +3,9 @@ package com.basebox.fundro.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.basebox.fundro.core.network.ApiResult
+import com.basebox.fundro.domain.usecase.AcceptMembershipUseCase
 import com.basebox.fundro.domain.usecase.GetCurrentUserUseCase
+import com.basebox.fundro.domain.usecase.GetInvitedGroupsUseCase
 import com.basebox.fundro.domain.usecase.GetMyGroupsUseCase
 import com.basebox.fundro.domain.usecase.GetUserGroupsUseCase
 import com.basebox.fundro.domain.usecase.JoinGroupUseCase
@@ -19,7 +21,9 @@ class HomeViewModel @Inject constructor(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getUserGroupsUseCase: GetUserGroupsUseCase,
     private val logoutUseCase: LogoutUseCase,
-    private val joinGroupUseCase: JoinGroupUseCase
+    private val joinGroupUseCase: JoinGroupUseCase,
+    private val acceptMembershipUseCase: AcceptMembershipUseCase,
+    private val getInvitedGroupsUseCase: GetInvitedGroupsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -31,6 +35,7 @@ class HomeViewModel @Inject constructor(
     init {
         loadUserData()
         loadGroups()
+        loadInvitedGroups()
     }
 
     fun loadUserData() {
@@ -95,6 +100,22 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun loadInvitedGroups() {
+        viewModelScope.launch {
+            getInvitedGroupsUseCase().collect { result ->
+                when (result) {
+                    is ApiResult.Success -> {
+                        _uiState.update { it.copy(invitedGroups = result.data) }
+                    }
+                    is ApiResult.Error -> {
+                        Timber.e("Failed to load invited groups: ${result.message}")
+                    }
+                    is ApiResult.Loading -> {}
+                }
+            }
+        }
+    }
+
     fun joinGroup(groupId: String) {
         viewModelScope.launch {
             joinGroupUseCase(groupId).collect { result ->
@@ -108,6 +129,38 @@ class HomeViewModel @Inject constructor(
                         _uiState.update { it.copy(error = result.message) }
                     }
                     is ApiResult.Loading -> {}
+                }
+            }
+        }
+    }
+
+    fun acceptMembership(groupId: String, userId: String) {
+        viewModelScope.launch {
+            acceptMembershipUseCase(groupId, userId).collect { result ->
+                when (result) {
+                    is ApiResult.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                isRefreshing = false,
+                                error = null,
+                                acceptedMember = result.data) }
+
+                        // Refresh groups to show updated status
+                        loadGroups()
+                        Timber.d("Accepted membership successfully")
+                    }
+                    is ApiResult.Error -> {
+                        _uiState.update { it.copy(error = result.message) }
+                    }
+                    is ApiResult.Loading -> {
+                        _uiState.update {
+                            it.copy(
+                                isRefreshing = true,
+                                isLoading = true
+                            )
+                        }
+                    }
                 }
             }
         }

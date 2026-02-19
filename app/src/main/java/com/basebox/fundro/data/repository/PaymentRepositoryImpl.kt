@@ -3,6 +3,8 @@ package com.basebox.fundro.data.repository
 import com.basebox.fundro.core.network.ApiResult
 import com.basebox.fundro.data.remote.api.PaymentApi
 import com.basebox.fundro.data.remote.dto.request.InitiatePaymentRequest
+import com.basebox.fundro.data.remote.dto.request.KycRequest
+import com.basebox.fundro.data.remote.dto.response.KycResponse
 import com.basebox.fundro.data.remote.dto.response.getOrThrow
 import com.basebox.fundro.domain.model.PaymentInitiation
 import com.basebox.fundro.domain.model.PaymentVerification
@@ -15,7 +17,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class PaymentRepositoryImpl @Inject constructor(
-    private val paymentApi: PaymentApi
+    private val paymentApi: PaymentApi,
 ) : PaymentRepository {
 
     override suspend fun initiatePayment(
@@ -61,6 +63,36 @@ class PaymentRepositoryImpl @Inject constructor(
             val errorMessage = "Network error: ${e.localizedMessage}"
             emit(ApiResult.Error(errorMessage))
             Timber.e(e, "Payment initiation error")
+        }
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun verifyKyc(
+        bvn: String,
+        accountNumber: String,
+        bankCode: String,
+        accountHolderName: String
+    ): Flow<ApiResult<KycResponse>> = flow<ApiResult<KycResponse>> {
+        emit(ApiResult.Loading)
+
+        try {
+            val request = KycRequest(
+                bvn = bvn,
+                accountNumber = accountNumber,
+                bankCode = bankCode,
+                accountHolderName = accountHolderName
+            )
+
+            val response = paymentApi.submitKyc(request)
+
+            if (response.isSuccessful && response.body() != null) {
+                val kycResponse = response.body()!!.getOrThrow()
+                emit(ApiResult.Success(kycResponse))
+            }
+            else {
+                emit(ApiResult.Error("Failed to Verify KYC"))
+            }
+        } catch (e: Exception) {
+            emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
         }
     }.flowOn(Dispatchers.IO)
 

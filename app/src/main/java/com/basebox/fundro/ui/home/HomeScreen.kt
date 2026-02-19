@@ -103,6 +103,7 @@ fun HomeScreen(
                 else -> {
                     HomeContent(
                         uiState = uiState,
+                        viewModel = viewModel,
                         onTabSelected = viewModel::selectTab,
                         onGroupClick = { groupId ->
                             navController.navigate("group/$groupId")

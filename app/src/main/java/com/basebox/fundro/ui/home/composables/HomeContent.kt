@@ -34,12 +34,14 @@ import com.basebox.fundro.ui.components.GroupCard
 import com.basebox.fundro.ui.home.composables.FilterTabs
 import com.basebox.fundro.ui.home.HomeTab
 import com.basebox.fundro.ui.home.HomeUiState
+import com.basebox.fundro.ui.home.HomeViewModel
 import com.basebox.fundro.ui.home.composables.OverviewCard
 
 
 @Composable
 fun HomeContent(
     uiState: HomeUiState,
+    viewModel: HomeViewModel,
     onTabSelected: (HomeTab) -> Unit,
     onGroupClick: (String) -> Unit
 ) {
@@ -61,6 +63,7 @@ fun HomeContent(
             selectedTab = uiState.selectedTab,
             myGroupsCount = uiState.myGroups.size,
             participatingCount = uiState.participatingGroups.size,
+            invitedCount = uiState.invitedGroups.size,
             onTabSelected = onTabSelected
         )
 
@@ -71,20 +74,22 @@ fun HomeContent(
             HomeTab.ALL -> (uiState.myGroups + uiState.participatingGroups).distinct()
             HomeTab.OWNED -> uiState.myGroups
             HomeTab.PARTICIPATING -> uiState.participatingGroups
+            HomeTab.INVITATIONS -> uiState.invitedGroups
         }
 
         if (groups.isEmpty()) {
-            if (groups.distinct().firstOrNull() == null)
             EmptyState(
                 title = when (uiState.selectedTab) {
                     HomeTab.ALL -> "No groups yet"
                     HomeTab.OWNED -> "No owned groups"
                     HomeTab.PARTICIPATING -> "Not participating in any groups"
+                    HomeTab.INVITATIONS -> "No pending invitations"
                 },
                 message = when (uiState.selectedTab) {
                     HomeTab.ALL -> "Create your first group to get started"
                     HomeTab.OWNED -> "You haven't created any groups yet"
                     HomeTab.PARTICIPATING -> "You're not participating in any groups"
+                    HomeTab.INVITATIONS -> "You have no pending group invitations"
                 }
             )
         } else {
@@ -98,7 +103,11 @@ fun HomeContent(
                 ) { group ->
                     GroupCard(
                         group = group,
-                        onClick = { onGroupClick(group.id) }
+                        onClick = { onGroupClick(group.id) },
+                        showInviteActions = uiState.selectedTab == HomeTab.INVITATIONS,
+                        onAcceptInvite = if (uiState.selectedTab == HomeTab.INVITATIONS) {
+                            { viewModel.acceptMembership(group.id, uiState.user?.id!!) }
+                        } else null
                     )
                 }
 
@@ -121,17 +130,14 @@ fun GroupInviteCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
-        // ... existing code
+            .clickable(onClick = onClick)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // ... existing content
 
-            // ADD THIS: Show invite actions if user is invited
             if (showInviteActions && onAcceptInvite != null) {
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -156,7 +162,7 @@ fun GroupInviteCard(
                     }
 
                     OutlinedButton(
-                        onClick = { /* TODO: Decline */ },
+                        onClick = { onAcceptInvite },
                         modifier = Modifier.weight(1f)
                     ) {
                         Icon(
@@ -172,3 +178,4 @@ fun GroupInviteCard(
         }
     }
 }
+         

@@ -51,4 +51,35 @@ class GroupMemberRepositoryImpl @Inject constructor(
             Timber.e(e, "Get members error")
         }
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun acceptGroupMembership(groupId: String, userId: String): Flow<ApiResult<GroupMember>> = flow {
+        emit(ApiResult.Loading)
+
+        try {
+            val response = groupMemberApi.acceptGroupMembership(groupId, userId)
+
+            if (response.isSuccessful && response.body() != null) {
+                val memberResponse = response.body()!!.getOrThrow()
+                val member = GroupMember(
+                    id = memberResponse.id,
+                    userId = memberResponse.userId,
+                    username = memberResponse.username,
+                    fullName = memberResponse.fullName,
+                    status = memberResponse.status,
+                    expectedAmount = memberResponse.expectedAmount,
+                    paidAmount = memberResponse.paidAmount,
+                    invitedAt = memberResponse.invitedAt,
+                    joinedAt = memberResponse.joinedAt,
+                    paidAt = memberResponse.paidAt
+                )
+
+                emit(ApiResult.Success(member))
+                Timber.d("Joined group successfully")
+            } else {
+                emit(ApiResult.Error("Failed to join group"))
+            }
+        } catch (e: Exception) {
+            emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
+        }
+    }.flowOn(Dispatchers.IO)
 }

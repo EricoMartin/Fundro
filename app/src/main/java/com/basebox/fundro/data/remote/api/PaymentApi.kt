@@ -1,7 +1,9 @@
 package com.basebox.fundro.data.remote.api
 
 import com.basebox.fundro.data.remote.dto.request.InitiatePaymentRequest
+import com.basebox.fundro.data.remote.dto.request.KycRequest
 import com.basebox.fundro.data.remote.dto.response.ApiResponse
+import com.basebox.fundro.data.remote.dto.response.KycResponse
 import com.basebox.fundro.data.remote.dto.response.PaymentInitiationResponse
 import com.basebox.fundro.data.remote.dto.response.PaymentVerificationResponse
 import retrofit2.Response
@@ -18,4 +20,9 @@ interface PaymentApi {
     suspend fun verifyPayment(
         @Path("contributionId") contributionId: String
     ): Response<ApiResponse<PaymentVerificationResponse>>
+
+    @POST("kyc/submit")
+    suspend fun submitKyc(
+        @Body request: KycRequest
+    ): Response<ApiResponse<KycResponse>>
 }

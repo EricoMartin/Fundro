@@ -105,7 +105,7 @@ fun ProfileScreen(
                     uiState = uiState,
                     modifier = Modifier.padding(padding),
                     onEditProfile = { navController.navigate("profile/edit") },
-                    onKycClick = { /* TODO: Navigate to KYC screen */ },
+                    onKycClick = { navController.navigate("profile/kyc") },
                     onSecurityClick = { /* TODO: Navigate to security settings */ },
                     onHelpClick = { /* TODO: Navigate to help */ },
                     onLogoutClick = viewModel::showLogoutDialog

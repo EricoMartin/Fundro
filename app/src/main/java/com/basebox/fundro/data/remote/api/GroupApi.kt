@@ -66,5 +66,5 @@ interface GroupApi {
     suspend fun getInvitedGroups(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20
-    ): Response<GroupsPageResponse>
+    ): Response<ApiResponse<GroupsPageResponse>>
 }

@@ -1,6 +1,7 @@
 package com.basebox.fundro.ui.home
 
 import com.basebox.fundro.domain.model.Group
+import com.basebox.fundro.domain.model.GroupMember
 import com.basebox.fundro.domain.model.User
 
 data class HomeUiState(
@@ -10,6 +11,7 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     val error: String? = null,
+    val acceptedMember: GroupMember? = null,
     val invitedGroups: List<Group> = emptyList(),
     val selectedTab: HomeTab = HomeTab.ALL
 )

@@ -35,13 +35,13 @@ class FundroApplication : Application() {
         notificationChannelManager.createAllChannels()
 
         // Initialize Paystack SDK
-//        try {
-//            PaystackSdk.initialize(applicationContext)
-//            PaystackSdk.setPublicKey(BuildConfig.PAYSTACK_PUBLIC_KEY)
-//            Timber.d("Paystack initialized with key: ${BuildConfig.PAYSTACK_PUBLIC_KEY.take(10)}...")
-//        } catch (e: Exception) {
-//            Timber.e(e, "Failed to initialize Paystack")
-//        }
+        try {
+            PaystackSdk.initialize(applicationContext)
+            PaystackSdk.setPublicKey(BuildConfig.PAYSTACK_PUBLIC_KEY)
+            Timber.d("Paystack initialized with key: ${BuildConfig.PAYSTACK_PUBLIC_KEY.take(10)}...")
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to initialize Paystack")
+        }
 
         // Log FCM token in debug
         if (BuildConfig.DEBUG) {
