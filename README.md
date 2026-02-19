@@ -1,4 +1,4 @@
-# 🚀 Fundro - Secure Group Payment Platform
+# Fundro - Secure Group Payment Platform
 
 <div align="center">
 
@@ -189,7 +189,7 @@ If you're running your own backend, update the URL in:
 
 | Step 1 | Step 2 | Step 3 |
 |--------|--------|--------|
-| ![Onboarding 1](https://via.placeholder.com/250x500/2563EB/FFFFFF?text=Welcome) | ![Onboarding 2](https://via.placeholder.com/250x500/2563EB/FFFFFF?text=How+It+Works) | ![Onboarding 3](https://via.placeholder.com/250x500/2563EB/FFFFFF?text=Get+Started) |
+| ![Onboarding 1](https://github.com/user-attachments/assets/dfdb8769-34cb-44f5-94a0-64dfe889f768) | ![Onboarding 2](https://github.com/user-attachments/assets/b2779680-004c-4f74-a076-fe707ee97cec) | ![Onboarding 3](https://github.com/user-attachments/assets/8544d18a-c317-4250-9a2e-b2dec292bc57) |
 
 </div>
 
