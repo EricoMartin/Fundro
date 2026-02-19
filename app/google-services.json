@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:841870011458:android:5739cfdc5e4a96014751db",
+        "android_client_info": {
+          "package_name": "com.basebox.fundro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMqHU2BIBc3tt71nfrN9rpbii4U88sXfA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:841870011458:android:b6342cd084e36fc64751db",
         "android_client_info": {
           "package_name": "com.basebox.fundro.debug"
