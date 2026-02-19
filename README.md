@@ -2,7 +2,6 @@
 
 <div align="center">
 
-![Fundro Logo](https://via.placeholder.com/150x150/2563EB/FFFFFF?text=Fundro)
 
 **Trustworthy Group Contributions Made Simple**
 
@@ -11,29 +10,9 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-6DB33F?logo=spring&logoColor=white)](https://spring.io/projects/spring-boot)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[Download APK](#-download--installation) • [Features](#-key-features) • [Documentation](#-documentation) • [Demo](#-demo)
+[Download APK](#-download--installation) 
 
 </div>
-
----
-
-## 📖 Table of Contents
-
-- [Overview](#-overview)
-- [Problem Statement](#-problem-statement)
-- [Key Features](#-key-features)
-- [Technology Stack](#-technology-stack)
-- [Architecture](#-architecture)
-- [Download & Installation](#-download--installation)
-- [User Guide](#-user-guide)
-- [API Documentation](#-api-documentation)
-- [Development Setup](#-development-setup)
-- [Backend Deployment](#-backend-deployment)
-- [Screenshots](#-screenshots)
-- [Security Features](#-security-features)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Contact](#-contact)
 
 ---
 
@@ -188,6 +167,15 @@ The app is pre-configured to connect to our hosted backend:
 If you're running your own backend, update the URL in:
 - File: `app/src/main/java/com/basebox/fundro/core/network/NetworkModule.kt`
 - Line: `private const val BASE_URL = "YOUR_BACKEND_URL/api"`
+
+---
+## 📱 Screenshots
+<div align="center">
+<img width="250" height="600" alt="Screenshot_20260219_064854" src="https://github.com/user-attachments/assets/931ac264-6ca5-4a75-9778-c73d11e35a75" />
+<img width="250" height="600" alt="Screenshot_20260219_064826" src="https://github.com/user-attachments/assets/b5ac076d-8a54-46ee-a231-20b087db22e6" />
+<img width="250" height="600" alt="Screenshot_20260219_064807" src="https://github.com/user-attachments/assets/706ae6a2-ecfe-4e69-b9ce-0f312243ebff" />
+<img width="250" height="600" alt="Screenshot_20260219_064752" src="https://github.com/user-attachments/assets/6e581743-5fbf-4b63-8c69-a2c836ef008a" />
+</div>
 
 ---
 
@@ -381,7 +369,9 @@ httpAuthorization: Bearer <your_jwt_token>
 Key Endpoints
 Authentication
 Register User
-httpPOST /auth/register
+
+```
+POST /auth/register
 Content-Type: application/json
 
 {
@@ -399,7 +389,9 @@ Response: 201 Created
   "email": "john@example.com",
   "token": "eyJhbGciOiJIUzI1NiIs..."
 }
+```
 Login
+```
 httpPOST /auth/login
 Content-Type: application/json
 
@@ -413,9 +405,13 @@ Response: 200 OK
   "token": "eyJhbGciOiJIUzI1NiIs...",
   "user": { ... }
 }
+```
 Groups
+
+
 Create Group
-httpPOST /groups
+```
+http POST /groups
 Authorization: Bearer <token>
 Content-Type: application/json
 
@@ -435,8 +431,10 @@ Response: 201 Created
   "status": "OPEN",
   ...
 }
+```
 Get My Groups
-httpGET /groups/my-groups?page=0&size=20
+```
+http GET /groups/my-groups?page=0&size=20
 Authorization: Bearer <token>
 
 Response: 200 OK
@@ -445,9 +443,11 @@ Response: 200 OK
   "totalElements": 5,
   "totalPages": 1
 }
+```
 Contributions
 Initiate Payment
-httpPOST /contributions/initiate
+```
+http POST /contributions/initiate
 Authorization: Bearer <token>
 Content-Type: application/json
 
@@ -463,8 +463,11 @@ Response: 200 OK
   "accessCode": "xxxxxxxxxx",
   "reference": "contrib_ref_123"
 }
+```
 Verify Payment
-httpGET /contributions/{contributionId}/verify
+
+```
+http GET /contributions/{contributionId}/verify
 Authorization: Bearer <token>
 
 Response: 200 OK
@@ -476,25 +479,27 @@ Response: 200 OK
 }
 ```
 
-```
-### Full API Documentation
+
+## Full API Documentation
 Complete API documentation with all endpoints, request/response schemas, and error codes:
 📄 View Full API Docs
 
-## 🚀 Development Setup
-#     Android Setup
-  # Prerequisites
+### 🚀 Development Setup
+
+####     Android Setup
+#####    Prerequisites
 
 - Android Studio Hedgehog | 2023.1.1 or later
 - JDK 17
 - Android SDK 34
 - Gradle 8.2
 
-## Steps
+### Steps
 
-**Clone Repository**
+1. **Clone Repository**
 
-bash git clone https://github.com/yourusername/fundro-android.git
+git clone https://github.com/yourusername/fundro-android.git
+
 cd fundro-android
 
 
@@ -502,7 +507,7 @@ cd fundro-android
 
 File → Open → Select fundro-android folder
 
-**Configure API Keys**
+3. **Configure API Keys**
 
 - Create local.properties:
 - properties PAYSTACK_PUBLIC_KEY=pk_test_xxxxxxxxxxxxx
@@ -516,7 +521,8 @@ File → Sync Project with Gradle Files
 5. **Run App**
 
 Run → Run 'app' or Shift+F10
-### Backend Setup
+
+## Backend Setup
 **Prerequisites**
 
 - Java 17 or later
@@ -524,16 +530,16 @@ Run → Run 'app' or Shift+F10
 - PostgreSQL 15+
 - Paystack account (test mode)
 
-## Steps
+### Steps
 
 Clone Repository
 
-bash git clone https://github.com/yourusername/fundro-backend.git
+git clone https://github.com/yourusername/fundro-backend.git
 cd fundro-backend
 
-## Configure Database
+#### Configure Database
 
-# Edit src/main/resources/application.properties:
+**Edit** src/main/resources/application.properties:
 propertiesspring.datasource.url=jdbc:postgresql://localhost:5432/fundro
 spring.datasource.username=postgres
 spring.datasource.password=your_password
@@ -544,92 +550,216 @@ paystack.public.key=pk_test_xxxxxxxxxxxxx
 jwt.secret=your-256-bit-secret
 jwt.expiration=86400000
 
-# Create Database
+### Create Database
 
-bash psql -U postgres
+psql -U postgres
 CREATE DATABASE fundro;
 \q
 
-# Run Application
+##### Run Application
 
-bash./mvnw spring-boot:run
+./mvnw spring-boot:run
 
-# Verify
+##### Verify
 
-bash curl http://localhost:8080/actuator/health
+curl http://localhost:8080/actuator/health
 Database Schema
 Run migrations:
-bash./mvnw flyway:migrate
+./mvnw flyway:migrate
 Or use provided SQL scripts in src/main/resources/db/migration/
 
-### ☁️ Backend Deployment
-# Option 1: Railway (Recommended)
+## ☁️ Backend Deployment
+### Option 1: Railway (Recommended)
 
-Create Account: https://railway.app
+  Create Account: https://railway.app
+  
+  New Project: Click "New Project"
+  Deploy from GitHub: Connect your repository
+  Add PostgreSQL: Add database service
 
-New Project: Click "New Project"
-Deploy from GitHub: Connect your repository
-Add PostgreSQL: Add database service
+##### Environment Variables:
 
-# Environment Variables:
+  env SPRING_DATASOURCE_URL=${{Postgres.DATABASE_URL}}
+  PAYSTACK_SECRET_KEY=sk_test_xxxxx
+  PAYSTACK_PUBLIC_KEY=pk_test_xxxxx
+  JWT_SECRET=your-secret-key
 
-env SPRING_DATASOURCE_URL=${{Postgres.DATABASE_URL}}
-PAYSTACK_SECRET_KEY=sk_test_xxxxx
-PAYSTACK_PUBLIC_KEY=pk_test_xxxxx
-JWT_SECRET=your-secret-key
+  Deploy: Railway auto-deploys on push
+  Get URL: Copy your deployment URL
 
-Deploy: Railway auto-deploys on push
-Get URL: Copy your deployment URL
+### Option 2: Render
 
-# Option 2: Render
+  Create Account: https://render.com
+  New Web Service: From GitHub
+  Configure:
+  
+  Build Command: ./mvnw clean package -DskipTests
+  Start Command: java -jar target/fundro-backend-0.0.1-SNAPSHOT.jar
+  
+  
+  Add Database: Create PostgreSQL instance
+  Environment Variables: Add all secrets
+  Deploy: Manual or auto-deploy
 
-Create Account: https://render.com
-New Web Service: From GitHub
-Configure:
+### Option 3: Heroku
 
-Build Command: ./mvnw clean package -DskipTests
-Start Command: java -jar target/fundro-backend-0.0.1-SNAPSHOT.jar
+#### Login
 
-
-Add Database: Create PostgreSQL instance
-Environment Variables: Add all secrets
-Deploy: Manual or auto-deploy
-
-# Option 3: Heroku
-bash# Login
 heroku login
 
-# Create app
+#### Create app
+
 heroku create fundro-api
 
-# Add PostgreSQL
+#### Add PostgreSQL
+
 heroku addons:create heroku-postgresql:mini
 
-# Set environment variables
+#### Set environment variables
+
 heroku config:set PAYSTACK_SECRET_KEY=sk_test_xxxxx
 heroku config:set JWT_SECRET=your-secret-key
 
-# Deploy
+#### Deploy
+
 git push heroku main
 
-# Open
-heroku open
-Post-Deployment
+#### Open
 
-# Update Android App:
+  heroku open
+  Post-Deployment
 
-Change BASE_URL in NetworkModule.kt
-Rebuild APK
+#### Update Android App:
 
-
-# Configure Paystack Webhook:
-
-Dashboard → Settings → Webhooks
-URL: https://your-backend.railway.app/api/webhooks/paystack
+  Change BASE_URL in NetworkModule.kt
+  
+  Rebuild APK
 
 
-# Test:
+#### Configure Paystack Webhook:
 
-bash curl https://your-backend.railway.app/actuator/health
+  Dashboard → Settings → Webhooks
+  URL: https://your-backend.railway.app/api/webhooks/paystack
+
+
+#### Test:
+
+  curl https://your-backend.railway.app/actuator/health
+
+### 🤝 Contributing
+We welcome contributions! Here's how:
+
+Getting Started
+1. Fork the repository
+
+2. Clone your fork
 
 ```
+git clone https://github.com/yourusername/fundro-android.git
+```
+3. Create a branch
+
+```
+git checkout -b feature/your-feature-name
+```
+4. Make changes and commit
+
+```
+git commit -m "Add: your feature description"
+```
+5. Push to your fork
+
+```
+git push origin feature/your-feature-name
+```
+6. Create Pull Request
+
+### Contribution Guidelines
+
+- Follow existing code style
+- Write tests for new features
+- Update documentation
+- Keep commits atomic and descriptive
+- Ensure all tests pass before PR
+
+### Code Style
+
+**Kotlin:**
+- Follow [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html)
+- Use ktlint for formatting
+
+**Java:**
+- Follow [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html)
+- Use Checkstyle plugin
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+MIT License
+
+Copyright (c) 2024 Fundro Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction.
+
+## 📞 Contact
+#### Team
+Project developer: Eric Ibu
+
+Email: baseboxng@gmail.com
+
+LinkedIn: [Your LinkedIn](https://bit.ly/4rkt45P)
+
+GitHub: @EricoMartin
+
+#### Support
+
+Email: support@fundro.app
+
+Twitter: @FundroApp
+
+Website: fundro.app (coming soon)
+
+#### Community
+Discord: Join our Discord (coming soon)
+
+## 🙏 Acknowledgments
+- Paystack: Payment gateway integration
+
+- Firebase: Cloud messaging and analytics
+
+- Material Design: UI/UX guidelines
+
+- Spring Boot: Backend framework
+
+- Jetpack Compose: Modern Android UI toolkit
+
+## ⚖️ Disclaimer
+Fundro is a demonstration project built for educational and portfolio purposes. While we implement industry-standard security practices, users should:
+
+- Start with small amounts for testing
+
+- Not use for critical financial transactions without proper audit
+
+- Understand that this is a learning project, not a licensed financial service
+
+#### For production use, ensure compliance with:
+
+- CBN (Central Bank of Nigeria) regulations
+
+- Payment Services Provider (PSP) licensing
+
+- Data Protection Regulation (NDPR)
+
+- KYC/AML requirements
+
+<div align="center">
+Built with ❤️ in Nigeria
+
+⬆ Back to Top
+
+</div>
