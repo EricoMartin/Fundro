@@ -38,7 +38,7 @@ class PaymentViewModel @Inject constructor(
                 when (result) {
                     is ApiResult.Success -> {
                         _uiState.update { it.copy(group = result.data) }
-                        Timber.d("Group loaded: ${result.data.name}")
+                        Timber.d("GroupEntity loaded: ${result.data.name}")
                     }
 
                     is ApiResult.Error -> {

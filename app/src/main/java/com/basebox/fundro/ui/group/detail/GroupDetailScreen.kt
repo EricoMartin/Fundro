@@ -88,7 +88,7 @@ fun GroupDetailScreen(
                     }
 
                     if (uiState.isOwner) {
-                        IconButton(onClick = { /* TODO: Group settings */ }) {
+                        IconButton(onClick = { /* TODO: GroupEntity settings */ }) {
                             Icon(
                                 imageVector = Icons.Default.MoreVert,
                                 contentDescription = "More options"

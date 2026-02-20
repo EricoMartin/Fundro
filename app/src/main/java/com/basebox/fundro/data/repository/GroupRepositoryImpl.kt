@@ -1,6 +1,10 @@
 package com.basebox.fundro.data.repository
 
 import com.basebox.fundro.core.network.ApiResult
+import com.basebox.fundro.data.local.dao.GroupDao
+import com.basebox.fundro.data.local.dao.GroupMemberDao
+import com.basebox.fundro.data.local.dto.toDomain
+import com.basebox.fundro.data.local.dto.toEntity
 import com.basebox.fundro.data.remote.api.GroupApi
 import com.basebox.fundro.data.remote.dto.request.AddMembersRequest
 import com.basebox.fundro.data.remote.dto.request.CreateGroupRequest
@@ -11,23 +15,38 @@ import com.basebox.fundro.domain.model.Owner
 import com.basebox.fundro.domain.repository.GroupRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.collections.map
 
 class GroupRepositoryImpl @Inject constructor(
-    private val groupApi: GroupApi
+    private val groupApi: GroupApi,
+    private val groupDao: GroupDao,
+    private val groupMemberDao: GroupMemberDao
 ) : GroupRepository {
 
     override suspend fun getMyGroups(page: Int, size: Int): Flow<ApiResult<List<Group>>> = flow {
         emit(ApiResult.Loading)
 
         try {
+            val cachedGroups = groupDao.getGroupsByTypeFlow("OWNED")
+                .map { entities -> entities.map { it.toDomain() } }
+                .first()
+
+            if (cachedGroups.isNotEmpty()) {
+                emit(ApiResult.Success(cachedGroups))
+                Timber.d("📦 Emitted ${cachedGroups.size} cached groups")
+            }
+
             val response = groupApi.getMyGroups(page, size)
 
             if (response.isSuccessful && response.body() != null) {
                 val groupsPage = response.body()!!.groups
+
                 val groups = groupsPage.groups.map { groupResponse ->
                     Group(
                         id = groupResponse.id,
@@ -51,10 +70,16 @@ class GroupRepositoryImpl @Inject constructor(
                         hasCurrentUserContributed = groupResponse.hasCurrentUserContributed
                     )
                 }
+                val entities = groups.map { it.toEntity("OWNED") }
+                groupDao.deleteByType("OWNED")
+                groupDao.insertGroups(entities)
 
                 emit(ApiResult.Success(groups))
                 Timber.d("Fetched ${groups.size} groups")
             } else {
+                if (cachedGroups.isEmpty()) {
+                    emit(ApiResult.Error("Failed to fetch groups"))
+                }
                 val errorMessage = when (response.code()) {
                     401 -> "Session expired. Please login again."
                     else -> "Failed to fetch groups: ${response.message()}"
@@ -63,6 +88,17 @@ class GroupRepositoryImpl @Inject constructor(
                 Timber.e("Get groups failed: $errorMessage")
             }
         } catch (e: Exception) {
+            val cachedGroups = groupDao.getGroupsByTypeFlow("OWNED")
+                .map { entities -> entities.map { it.toDomain() } }
+                .first()
+
+            if (cachedGroups.isNotEmpty()) {
+                emit(ApiResult.Success(cachedGroups))
+                Timber.d("📦 Using cached data due to network error")
+            } else {
+                emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
+            }
+
             val errorMessage = "Network error: ${e.localizedMessage}"
             emit(ApiResult.Error(errorMessage))
             Timber.e(e, "Get groups error")
@@ -104,6 +140,14 @@ class GroupRepositoryImpl @Inject constructor(
         emit(ApiResult.Loading)
 
         try {
+            val cachedGroups = groupDao.getGroupsByTypeFlow("PARTICIPATING")
+                .map { entities -> entities.map { it.toDomain() } }
+                .first()
+
+            if (cachedGroups.isNotEmpty()) {
+                emit(ApiResult.Success(cachedGroups))
+                Timber.d("📦 Emitted ${cachedGroups.size} cached groups")
+            }
             val response = groupApi.getParticipatingGroups(page, size)
 
             if (response.isSuccessful && response.body() != null) {
@@ -132,11 +176,31 @@ class GroupRepositoryImpl @Inject constructor(
                     )
                 }
 
+                val entities = groups.map { it.toEntity("PARTICIPATING") }
+                groupDao.deleteByType("OWNED")
+                groupDao.insertGroups(entities)
+
+                emit(ApiResult.Success(groups))
+                Timber.d("Fetched ${groups.size} groups")
+
                 emit(ApiResult.Success(groups))
             } else {
+                if (cachedGroups.isEmpty()) {
+                    emit(ApiResult.Error("Failed to fetch groups"))
+                }
                 emit(ApiResult.Error("Failed to fetch participating groups"))
             }
         } catch (e: Exception) {
+            val cachedGroups = groupDao.getGroupsByTypeFlow("PARTICIPATING")
+                .map { entities -> entities.map { it.toDomain() } }
+                .first()
+
+            if (cachedGroups.isNotEmpty()) {
+                emit(ApiResult.Success(cachedGroups))
+                Timber.d("📦 Using cached data due to network error")
+            } else {
+                emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
+            }
             emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
         }
     }.flowOn(Dispatchers.IO)
@@ -145,6 +209,10 @@ class GroupRepositoryImpl @Inject constructor(
         emit(ApiResult.Loading)
 
         try {
+            val cachedGroup = groupDao.getGroup(groupId)!!.toDomain()
+
+            emit(ApiResult.Success(cachedGroup))
+            Timber.d("📦 Emitted $cachedGroup cached group")
             val response = groupApi.getGroupById(groupId)
 
             if (response.isSuccessful && response.body() != null) {
@@ -170,12 +238,24 @@ class GroupRepositoryImpl @Inject constructor(
                     progressPercentage = groupResponse.progressPercentage,
                     hasCurrentUserContributed = groupResponse.hasCurrentUserContributed
                 )
+                groupDao.updateGroup(group.toEntity("OWNED"))
 
                 emit(ApiResult.Success(group))
             } else {
+
+                emit(ApiResult.Error("Failed to fetch cached group"))
+
                 emit(ApiResult.Error("Failed to fetch group details: ${response.body()!!.message}"))
             }
         } catch (e: Exception) {
+            val cachedGroup = groupDao.getGroup(groupId)!!.toDomain()
+            if (cachedGroup != null) {
+                emit(ApiResult.Success(cachedGroup))
+                Timber.d("📦 Using cached data due to network error")
+            } else {
+                emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
+            }
+
             emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
         }
     }.flowOn(Dispatchers.IO)
@@ -184,6 +264,12 @@ class GroupRepositoryImpl @Inject constructor(
         emit(ApiResult.Loading)
 
         try {
+            val cachedMembers = groupMemberDao.getMembers(groupId)
+            if (cachedMembers.isNotEmpty()) {
+                emit(ApiResult.Success(cachedMembers.map { it.toDomain() }))
+                Timber.d("📦 Emitted ${cachedMembers.size} cached members")
+            }
+
             val response = groupApi.getGroupMembers(groupId)
 
             if (response.isSuccessful && response.body() != null) {
@@ -202,6 +288,12 @@ class GroupRepositoryImpl @Inject constructor(
                         paidAt = memberResponse.paidAt
                     )
                 }
+                val membersEntity = members.map { it.toEntity(groupId) }
+
+                val cachedMembers = groupMemberDao.insertMembers(membersEntity)
+
+                Timber.d("📦 Emitted $cachedMembers cached members")
+
 
                 emit(ApiResult.Success(members))
                 Timber.d("Fetched ${members.size} members for group $groupId")
@@ -209,6 +301,11 @@ class GroupRepositoryImpl @Inject constructor(
                 emit(ApiResult.Error("Failed to fetch group members"))
             }
         } catch (e: Exception) {
+            val cachedMembers = groupMemberDao.getMembers(groupId)
+            if (cachedMembers.isNotEmpty()) {
+                emit(ApiResult.Success(cachedMembers.map { it.toDomain() }))
+                Timber.d("📦 Emitted ${cachedMembers.size} cached members due to network errors")
+            }
             emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
         }
     }.flowOn(Dispatchers.IO)
@@ -217,12 +314,22 @@ class GroupRepositoryImpl @Inject constructor(
         emit(ApiResult.Loading)
 
         try {
+            val cachedGroups = groupDao.getGroupsByTypeFlow("INVITED")
+                .map { entities -> entities.map { it.toDomain() } }
+                .first()
+
+            if (cachedGroups.isNotEmpty()) {
+                emit(ApiResult.Success(cachedGroups))
+                Timber.d("📦 Emitted ${cachedGroups.size} cached groups")
+            }
+
+
             val response = groupApi.getInvitedGroups(page, size)
 
             if (response.isSuccessful && response.body() != null) {
                 val groupsPage = response.body()!!.getOrThrow()
                 val groups = groupsPage.groups.map {
-                /* map to Group */
+                /* map to GroupEntity */
                     Group(
                         id = it.id,
                         name = it.name,
@@ -245,11 +352,30 @@ class GroupRepositoryImpl @Inject constructor(
                         hasCurrentUserContributed = it.hasCurrentUserContributed
                     )
                 }
+
+                val entities = groups.map { it.toEntity("INVITED") }
+                groupDao.deleteByType("INVITED")
+                groupDao.insertGroups(entities)
+
+                Timber.d("Fetched ${groups.size} groups")
+
+
                 emit(ApiResult.Success(groups))
             } else {
                 emit(ApiResult.Error("Failed to fetch invited groups"))
             }
         } catch (e: Exception) {
+            val cachedGroups = groupDao.getGroupsByTypeFlow("INVITED")
+                .map { entities -> entities.map { it.toDomain() } }
+                .first()
+
+            if (cachedGroups.isNotEmpty()) {
+                emit(ApiResult.Success(cachedGroups))
+                Timber.d("📦 Using cached data due to network error")
+            } else {
+                emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
+            }
+
             emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
         }
     }.flowOn(Dispatchers.IO)
@@ -305,9 +431,10 @@ class GroupRepositoryImpl @Inject constructor(
                     progressPercentage = groupResponse.progressPercentage,
                     hasCurrentUserContributed = groupResponse.hasCurrentUserContributed
                 )
+                groupDao.insertGroup(group.toEntity("OWNED"))
 
                 emit(ApiResult.Success(group))
-                Timber.d("Group created successfully: ${group.name}")
+                Timber.d("GroupEntity created successfully: ${group.name}")
             } else {
                 val errorMessage = when (response.code()) {
                     400 -> "Invalid request: Complete KYC Verification first."
@@ -355,14 +482,15 @@ class GroupRepositoryImpl @Inject constructor(
                         paidAt = memberResponse.paidAt
                     )
                 }
-
+                val membersEntity = members.map { it.toEntity(groupId) }
+                groupMemberDao.insertMembers(membersEntity)
                 emit(ApiResult.Success(members))
                 Timber.d("Added ${members.size} members to group $groupId")
             } else {
                 val errorMessage = when (response.code()) {
                     400 -> "Invalid member data"
                     403 -> "You don't have permission to add members"
-                    404 -> "Group not found"
+                    404 -> "GroupEntity not found"
                     else -> "Failed to add members: ${response.message()}"
                 }
                 emit(ApiResult.Error(errorMessage, response.code()))

@@ -64,7 +64,7 @@
                     android:host="http://10.0.2.2:8080"
                     android:pathPrefix="/paystack/callback" />
 
-                <!-- Group invite links -->
+                <!-- GroupEntity invite links -->
                 <data
                     android:scheme="https"
                     android:host="fundro.app"
@@ -76,14 +76,14 @@
              FIREBASE MESSAGING SERVICE
              ======================================== -->
         <service
-            android:name=".core.notification.FundroFirebaseMessagingService"
+            android:name=".core.notificationEntity.FundroFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <!-- Firebase default notification channel -->
+        <!-- Firebase default notificationEntity channel -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />

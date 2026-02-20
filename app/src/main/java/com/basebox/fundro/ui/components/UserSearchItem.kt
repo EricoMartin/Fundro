@@ -69,7 +69,7 @@ fun UserSearchItem(
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        // User info
+        // UserEntity info
         Column(
             modifier = Modifier.weight(1f)
         ) {

@@ -64,7 +64,7 @@ class GroupDetailViewModel @Inject constructor(
                                 error = null
                             )
                         }
-                        Timber.d("Group loaded: ${result.data.name}")
+                        Timber.d("GroupEntity loaded: ${result.data.name}")
                     }
 
                     is ApiResult.Error -> {

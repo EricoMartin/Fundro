@@ -51,7 +51,7 @@ class SecureStorage @Inject constructor(
         Timber.d("Access token cleared")
     }
 
-    // User ID
+    // UserEntity ID
     fun saveUserId(userId: String) {
         encryptedPrefs.edit().putString(KEY_USER_ID, userId).apply()
     }
@@ -60,7 +60,7 @@ class SecureStorage @Inject constructor(
         return encryptedPrefs.getString(KEY_USER_ID, null)
     }
 
-    // User Email
+    // UserEntity Email
     fun saveUserEmail(email: String) {
         encryptedPrefs.edit().putString(KEY_USER_EMAIL, email).apply()
     }

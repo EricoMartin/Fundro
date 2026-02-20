@@ -89,7 +89,7 @@ class CreateGroupViewModel @Inject constructor(
 
         // Validate name
         if (currentState.name.isBlank()) {
-            _uiState.update { it.copy(nameError = "Group name is required") }
+            _uiState.update { it.copy(nameError = "GroupEntity name is required") }
             hasError = true
         } else if (currentState.name.length < 3) {
             _uiState.update { it.copy(nameError = "Name must be at least 3 characters") }
@@ -188,7 +188,7 @@ class CreateGroupViewModel @Inject constructor(
                     is ApiResult.Success -> {
                         _uiState.update { it.copy(isLoading = false, error = null) }
                         _createSuccess.value = result.data.id
-                        Timber.d("Group created successfully: ${result.data.name}")
+                        Timber.d("GroupEntity created successfully: ${result.data.name}")
                     }
 
                     is ApiResult.Error -> {

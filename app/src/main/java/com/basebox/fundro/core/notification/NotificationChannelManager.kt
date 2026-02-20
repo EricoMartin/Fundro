@@ -38,10 +38,10 @@ class NotificationChannelManager @Inject constructor(
 
                 NotificationChannel(
                     CHANNEL_GROUPS,
-                    "Group Activity",
+                    "GroupEntity Activity",
                     NotificationManager.IMPORTANCE_DEFAULT
                 ).apply {
-                    description = "Group status updates and milestones"
+                    description = "GroupEntity status updates and milestones"
                     enableVibration(true)
                 },
 

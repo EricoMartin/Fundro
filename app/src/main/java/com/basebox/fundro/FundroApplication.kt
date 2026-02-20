@@ -70,7 +70,7 @@ class FundroApplication : Application() {
 
                 NotificationChannel(
                     "group_notifications",
-                    "Group Activity",
+                    "GroupEntity Activity",
                     NotificationManager.IMPORTANCE_DEFAULT
                 ).apply {
                     description = "Notifications about group activity and member updates"

@@ -28,7 +28,7 @@ object PaystackHelper {
      * Charge card using Paystack SDK
      *
      * @param activity The calling activity
-     * @param email User's email
+     * @param email UserEntity's email
      * @param amount Amount in Kobo (multiply Naira by 100)
      * @param accessCode Access code from backend
      * @param callback Payment callback

@@ -6,7 +6,7 @@ enum class NotificationType(val value: String) {
     PAYMENT_CONFIRMED("PAYMENT_CONFIRMED"),
     PAYMENT_FAILED("PAYMENT_FAILED"),
 
-    // Group notifications
+    // GroupEntity notifications
     GROUP_CREATED("GROUP_CREATED"),
     GROUP_FUNDED("GROUP_FUNDED"),
     GROUP_RELEASED("GROUP_RELEASED"),

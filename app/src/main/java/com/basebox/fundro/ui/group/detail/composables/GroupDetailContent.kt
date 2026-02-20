@@ -27,7 +27,7 @@ import com.basebox.fundro.ui.group.enums.DetailTab
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            // Group Summary Card
+            // GroupEntity Summary Card
             GroupSummaryCard(
                 group = group,
                 isOwner = uiState.isOwner

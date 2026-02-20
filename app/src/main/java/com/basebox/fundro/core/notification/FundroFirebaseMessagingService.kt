@@ -69,7 +69,7 @@ class FundroFirebaseMessagingService : FirebaseMessagingService() {
             // Broadcast for in-app handling
             broadcastNotification(fundroNotification)
 
-            Timber.d("Notification processed: $type - $title")
+            Timber.d("NotificationEntity processed: $type - $title")
         } catch (e: Exception) {
             Timber.e(e, "Failed to process FCM message")
         }
@@ -114,10 +114,10 @@ class FundroFirebaseMessagingService : FirebaseMessagingService() {
         NotificationType.PAYMENT_RECEIVED -> "Payment Received! 💰"
         NotificationType.PAYMENT_CONFIRMED -> "Payment Confirmed ✅"
         NotificationType.PAYMENT_FAILED -> "Payment Failed ❌"
-        NotificationType.GROUP_CREATED -> "New Group Created 🎉"
-        NotificationType.GROUP_FUNDED -> "Group Fully Funded! 🎊"
+        NotificationType.GROUP_CREATED -> "New GroupEntity Created 🎉"
+        NotificationType.GROUP_FUNDED -> "GroupEntity Fully Funded! 🎊"
         NotificationType.GROUP_RELEASED -> "Funds Released! 🚀"
-        NotificationType.GROUP_CANCELLED -> "Group Cancelled"
+        NotificationType.GROUP_CANCELLED -> "GroupEntity Cancelled"
         NotificationType.MEMBER_INVITED -> "You've Been Invited! 👋"
         NotificationType.MEMBER_JOINED -> "New Member Joined 🎉"
         NotificationType.MEMBER_PAID -> "Member Payment Received 💰"

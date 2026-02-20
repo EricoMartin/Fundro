@@ -88,7 +88,7 @@ fun SplashScreen(
 
             // Tagline
             Text(
-                text = "Safe Group Payments",
+                text = "Safe GroupEntity Payments",
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White.copy(alpha = 0.9f)
             )

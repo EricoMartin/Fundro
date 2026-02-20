@@ -233,7 +233,7 @@ data class NotificationDialogConfig(
                         Color(0xFF10B981)
                     ),
                     hasAction = notification.groupId != null,
-                    actionButtonText = "View Group",
+                    actionButtonText = "View GroupEntity",
                     actionButtonColor = FundroGreen
                 )
 
@@ -270,7 +270,7 @@ data class NotificationDialogConfig(
                         FundroSecondaryBlue
                     ),
                     hasAction = notification.groupId != null,
-                    actionButtonText = "View Group",
+                    actionButtonText = "View GroupEntity",
                     actionButtonColor = FundroPrimaryBlue
                 )
 

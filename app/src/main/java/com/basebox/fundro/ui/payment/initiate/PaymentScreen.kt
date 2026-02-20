@@ -128,7 +128,7 @@ fun PaymentScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(24.dp)
             ) {
-                // Group info
+                // GroupEntity info
                 uiState.group?.let { group ->
                     Card(
                         modifier = Modifier.fillMaxWidth(),

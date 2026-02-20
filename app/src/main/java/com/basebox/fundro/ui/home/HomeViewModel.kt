@@ -44,7 +44,7 @@ class HomeViewModel @Inject constructor(
                 when (result) {
                     is ApiResult.Success -> {
                         _uiState.update { it.copy(user = result.data) }
-                        Timber.d("User loaded: ${result.data.email}")
+                        Timber.d("UserEntity loaded: ${result.data.email}")
                     }
                     is ApiResult.Error -> {
                         Timber.e("Failed to load user: ${result.message}")

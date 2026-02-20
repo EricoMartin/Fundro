@@ -51,7 +51,7 @@ class NotificationHelper @Inject constructor(
                 if (groupId != null) {
                     builder.addAction(
                         R.drawable.ic_notification,
-                        "View Group",
+                        "View GroupEntity",
                         createGroupPendingIntent(groupId)
                     )
                 }
@@ -72,7 +72,7 @@ class NotificationHelper @Inject constructor(
 
         val notificationId = notification.id.hashCode()
         notificationManager?.notify(notificationId, builder.build())
-        Timber.d("Notification shown: ${notification.title}")
+        Timber.d("NotificationEntity shown: ${notification.title}")
     }
 
     fun cancelNotification(notificationId: Int) {

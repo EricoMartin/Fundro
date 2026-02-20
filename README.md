@@ -18,11 +18,11 @@
 
 ## 🌟 Overview
 
-**Fundro** is a secure, mobile-first platform designed to revolutionize group contributions in Nigeria. Built on an escrow-based system, Fundro ensures that pooled funds are only released when all members have contributed, eliminating the trust issues common in informal group savings schemes.
+**Fundro** is a secure, mobile-first platform designed to revolutionize groupEntity contributions in Nigeria. Built on an escrow-based system, Fundro ensures that pooled funds are only released when all members have contributed, eliminating the trust issues common in informal groupEntity savings schemes.
 
 ### Why Fundro?
 
-In Nigeria's vibrant social economy, friends, families, and colleagues frequently pool money for shared goals—weddings, birthdays, emergencies, or group investments. However, these arrangements often rely on informal trust, leading to:
+In Nigeria's vibrant social economy, friends, families, and colleagues frequently pool money for shared goals—weddings, birthdays, emergencies, or groupEntity investments. However, these arrangements often rely on informal trust, leading to:
 
 - **Abandoned Contributions**: Some members contribute, others don't
 - **Mismanaged Funds**: No transparent tracking of who paid what
@@ -35,7 +35,7 @@ In Nigeria's vibrant social economy, friends, families, and colleagues frequentl
 
 ## 🎯 Problem Statement
 
-Traditional group contribution systems in Nigeria face critical challenges:
+Traditional groupEntity contribution systems in Nigeria face critical challenges:
 
 | Problem | Impact | Fundro Solution |
 |---------|--------|-----------------|
@@ -52,13 +52,13 @@ Traditional group contribution systems in Nigeria face critical challenges:
 ### 🔒 Core Features
 
 #### 1. **Escrow-Based Contributions**
-- Funds held securely until group reaches target amount
+- Funds held securely until groupEntity reaches target amount
 - Automatic release when fully funded
 - Refund protection if target isn't met
 
 #### 2. **Real-Time Payment Tracking**
 - Live progress bars showing contribution status
-- Instant notifications on member payments
+- Instant notificationEntities on member payments
 - Transparent ledger of all transactions
 
 #### 3. **Secure Authentication**
@@ -67,7 +67,7 @@ Traditional group contribution systems in Nigeria face critical challenges:
 - Biometric support (planned)
 
 #### 4. **Group Management**
-- Create public or private groups
+- Create public or private groupEntities
 - Set contribution deadlines
 - Invite members via username search
 - Generate shareable join codes
@@ -81,7 +81,7 @@ Traditional group contribution systems in Nigeria face critical challenges:
 #### 6. **Push Notifications**
 - Firebase Cloud Messaging
 - Real-time payment alerts
-- Group milestone notifications
+- Group milestone notificationEntities
 - Invitation reminders
 
 #### 7. **KYC Verification** (Planned)
@@ -171,10 +171,10 @@ If you're running your own backend, update the URL in:
 ---
 ## 📱 Screenshots
 <div align="center">
-<img width="250" height="600" alt="Screenshot_20260219_064854" src="https://github.com/user-attachments/assets/931ac264-6ca5-4a75-9778-c73d11e35a75" />
-<img width="250" height="600" alt="Screenshot_20260219_064826" src="https://github.com/user-attachments/assets/b5ac076d-8a54-46ee-a231-20b087db22e6" />
-<img width="250" height="600" alt="Screenshot_20260219_064807" src="https://github.com/user-attachments/assets/706ae6a2-ecfe-4e69-b9ce-0f312243ebff" />
-<img width="250" height="600" alt="Screenshot_20260219_064752" src="https://github.com/user-attachments/assets/6e581743-5fbf-4b63-8c69-a2c836ef008a" />
+<img width="250" height="600" alt="Screenshot_20260219_064854" src="https://github.com/userEntity-attachments/assets/931ac264-6ca5-4a75-9778-c73d11e35a75" />
+<img width="250" height="600" alt="Screenshot_20260219_064826" src="https://github.com/userEntity-attachments/assets/b5ac076d-8a54-46ee-a231-20b087db22e6" />
+<img width="250" height="600" alt="Screenshot_20260219_064807" src="https://github.com/userEntity-attachments/assets/706ae6a2-ecfe-4e69-b9ce-0f312243ebff" />
+<img width="250" height="600" alt="Screenshot_20260219_064752" src="https://github.com/userEntity-attachments/assets/6e581743-5fbf-4b63-8c69-a2c836ef008a" />
 </div>
 
 ---
@@ -189,7 +189,7 @@ If you're running your own backend, update the URL in:
 
 | Step 1 | Step 2 | Step 3 |
 |--------|--------|--------|
-| ![Onboarding 1](https://github.com/user-attachments/assets/dfdb8769-34cb-44f5-94a0-64dfe889f768) | ![Onboarding 2](https://github.com/user-attachments/assets/b2779680-004c-4f74-a076-fe707ee97cec) | ![Onboarding 3](https://github.com/user-attachments/assets/8544d18a-c317-4250-9a2e-b2dec292bc57) |
+| ![Onboarding 1](https://github.com/userEntity-attachments/assets/dfdb8769-34cb-44f5-94a0-64dfe889f768) | ![Onboarding 2](https://github.com/userEntity-attachments/assets/b2779680-004c-4f74-a076-fe707ee97cec) | ![Onboarding 3](https://github.com/userEntity-attachments/assets/8544d18a-c317-4250-9a2e-b2dec292bc57) |
 
 </div>
 
@@ -229,9 +229,9 @@ If you're running your own backend, update the URL in:
 #### Step 1: Basic Information
 
 1. Tap the **"+" Floating Action Button** on home screen
-2. Enter group details:
+2. Enter groupEntity details:
     - **Name**: e.g., "Ade's 30th Birthday Gift"
-    - **Description**: Optional details about the group
+    - **Description**: Optional details about the groupEntity
     - **Target Amount**: ₦5,000 - ₦10,000,000
     - **Category**: Gift, Event, Subscription, Campaign, or General
 
@@ -244,12 +244,12 @@ If you're running your own backend, update the URL in:
     - **Private**: Only invited members can see
     - **Public**: Anyone can discover and join
     - **Unlisted**: Anyone with the link can join
-3. **Max Members** (Optional): Limit group size
+3. **Max Members** (Optional): Limit groupEntity size
 4. **Generate Join Code**: Create a shareable code
 
 5. Tap **"Create Pool"**
 
-**Result**: Group is created! You're taken to the group detail page.
+**Result**: Group is created! You're taken to the groupEntity detail page.
 
 ---
 
@@ -257,18 +257,18 @@ If you're running your own backend, update the URL in:
 
 #### Method 1: Search by Username
 
-1. Open your group
+1. Open your groupEntity
 2. Tap **"Add Members"**
 3. Type username in search bar (e.g., "janedoe")
 4. Results appear as you type
-5. Tap user to select (chip appears at top)
+5. Tap userEntity to select (chip appears at top)
 6. Select multiple users
 7. *Optional*: Enter expected amount per member
 8. Tap **"Add X Members"**
 
 #### Method 2: Share Join Code (Planned)
 
-1. Open group details
+1. Open groupEntity details
 2. Tap "Share" icon
 3. Copy join code or share link
 4. Members enter code in app to join
@@ -279,7 +279,7 @@ If you're running your own backend, update the URL in:
 
 #### Payment Flow
 
-1. **Open Group**: Navigate to the group
+1. **Open Group**: Navigate to the groupEntity
 2. **Tap Contribute**: Click the "Contribute" button
 3. **Enter Amount**:
     - Minimum: ₦100
@@ -347,12 +347,12 @@ Card: 5060 6666 6666 6666 666
 ### Viewing Notifications
 
 1. Tap bell icon (top-right of home)
-2. See all notifications:
+2. See all notificationEntities:
     - Payment confirmations
     - Member invitations
     - Group funded alerts
     - KYC updates
-3. Tap notification to view details
+3. Tap notificationEntity to view details
 4. Mark all as read
 
 ---
@@ -384,7 +384,7 @@ Content-Type: application/json
 
 Response: 201 Created
 {
-  "id": "user-uuid",
+  "id": "userEntity-uuid",
   "username": "johndoe",
   "email": "john@example.com",
   "token": "eyJhbGciOiJIUzI1NiIs..."
@@ -403,7 +403,7 @@ Content-Type: application/json
 Response: 200 OK
 {
   "token": "eyJhbGciOiJIUzI1NiIs...",
-  "user": { ... }
+  "userEntity": { ... }
 }
 ```
 Groups
@@ -411,7 +411,7 @@ Groups
 
 Create Group
 ```
-http POST /groups
+http POST /groupEntities
 Authorization: Bearer <token>
 Content-Type: application/json
 
@@ -426,7 +426,7 @@ Content-Type: application/json
 
 Response: 201 Created
 {
-  "id": "group-uuid",
+  "id": "groupEntity-uuid",
   "name": "Weekend Trip",
   "status": "OPEN",
   ...
@@ -434,12 +434,12 @@ Response: 201 Created
 ```
 Get My Groups
 ```
-http GET /groups/my-groups?page=0&size=20
+http GET /groupEntities/my-groupEntities?page=0&size=20
 Authorization: Bearer <token>
 
 Response: 200 OK
 {
-  "groups": [ ... ],
+  "groupEntities": [ ... ],
   "totalElements": 5,
   "totalPages": 1
 }
@@ -452,7 +452,7 @@ Authorization: Bearer <token>
 Content-Type: application/json
 
 {
-  "groupId": "group-uuid",
+  "groupId": "groupEntity-uuid",
   "amount": 10000.00
 }
 

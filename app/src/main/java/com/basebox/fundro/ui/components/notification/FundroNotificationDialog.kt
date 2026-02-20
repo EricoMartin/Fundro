@@ -7,7 +7,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.basebox.fundro.core.notification.model.FundroNotification
 
 /**
- * Notification dialog
+ * NotificationEntity dialog
  * Shown when app is in foreground and notification received
  */
 @Composable

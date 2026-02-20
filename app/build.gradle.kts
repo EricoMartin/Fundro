@@ -6,9 +6,9 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
-    id("kotlin-kapt")
     id("kotlin-parcelize")
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
 }
 
 android {
@@ -159,8 +159,8 @@ dependencies {
     // DEPENDENCY INJECTION (HILT)
     // ========================================
     implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
-    kapt("androidx.hilt:hilt-compiler:1.1.0")
+    ksp("com.google.dagger:hilt-android-compiler:2.51.1")
+    ksp("androidx.hilt:hilt-compiler:1.1.0")
 
     // ========================================
     // NETWORKING (RETROFIT + OKHTTP)
@@ -173,7 +173,7 @@ dependencies {
     // Moshi (JSON parsing - better than Gson for Kotlin)
     implementation("com.squareup.moshi:moshi:1.15.0")
     implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
 
     // Google Accompanist for FlowRow
     implementation("com.google.accompanist:accompanist-flowlayout:0.34.0")
@@ -184,7 +184,8 @@ dependencies {
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
-    kapt("androidx.room:room-compiler:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-paging:${roomVersion}")
 
     // ========================================
     // DATASTORE (SECURE PREFERENCES)
@@ -292,10 +293,5 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.50")
-    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.50")
-}
-
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
+    kspAndroidTest("com.google.dagger:hilt-android-compiler:2.50")
 }
