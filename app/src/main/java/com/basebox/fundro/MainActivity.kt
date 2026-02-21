@@ -20,6 +20,7 @@ import androidx.navigation.navArgument
 import com.basebox.fundro.core.payment.PaystackHelper
 import com.basebox.fundro.ui.auth.login.LoginScreen
 import com.basebox.fundro.ui.auth.register.RegisterScreen
+import com.basebox.fundro.ui.components.feedback.ProvideFeedbackManager
 import com.basebox.fundro.ui.group.create.CreateGroupScreen
 import com.basebox.fundro.ui.group.detail.GroupDetailScreen
 import com.basebox.fundro.ui.group.members.AddMembersScreen
@@ -48,106 +49,113 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             FundroTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val navController = rememberNavController()
-
-                    NavHost(
-                        navController = navController,
-                        startDestination = "splash"
+                ProvideFeedbackManager {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
                     ) {
-                        composable("splash") {
-                            SplashScreen(navController = navController)
-                        }
+                        val navController = rememberNavController()
 
-                        composable("onboarding") {
-                            OnboardingScreen(navController = navController)
-                        }
+                        NavHost(
+                            navController = navController,
+                            startDestination = "splash"
+                        ) {
+                            composable("splash") {
+                                SplashScreen(navController = navController)
+                            }
 
-                        composable("login") {
-                            LoginScreen(navController = navController)
-                        }
+                            composable("onboarding") {
+                                OnboardingScreen(navController = navController)
+                            }
 
-                        composable("register") {
-                            RegisterScreen(navController = navController)
-                        }
+                            composable("login") {
+                                LoginScreen(navController = navController)
+                            }
 
-                        composable("home") {
-                            HomeScreen(navController = navController)
-                        }
+                            composable("register") {
+                                RegisterScreen(navController = navController)
+                            }
 
-                        composable("create-group") {
-                            CreateGroupScreen(navController = navController)
-                        }
+                            composable("home") {
+                                HomeScreen(navController = navController)
+                            }
 
-                        composable(
-                            route = "group/{groupId}",
-                            arguments = listOf(
-                                navArgument("groupId") { type = NavType.StringType }
-                            )
-                        ) { backStackEntry ->
-                            val groupId =
-                                backStackEntry.arguments?.getString("groupId") ?: return@composable
-                            GroupDetailScreen(
-                                navController = navController,
-                                groupId = groupId
-                            )
-                        }
+                            composable("create-group") {
+                                CreateGroupScreen(navController = navController)
+                            }
 
-                        composable(
-                            route = "group/{groupId}/add-members",
-                            arguments = listOf(
-                                navArgument("groupId") { type = NavType.StringType }
-                            )
-                        ) { backStackEntry ->
-                            val groupId =
-                                backStackEntry.arguments?.getString("groupId") ?: return@composable
-                            AddMembersScreen(
-                                navController = navController,
-                                groupId = groupId
-                            )
-                        }
+                            composable(
+                                route = "group/{groupId}",
+                                arguments = listOf(
+                                    navArgument("groupId") { type = NavType.StringType }
+                                )
+                            ) { backStackEntry ->
+                                val groupId =
+                                    backStackEntry.arguments?.getString("groupId")
+                                        ?: return@composable
+                                GroupDetailScreen(
+                                    navController = navController,
+                                    groupId = groupId
+                                )
+                            }
 
-                        composable(
-                            route = "payment/{groupId}",
-                            arguments = listOf(
-                                navArgument("groupId") { type = NavType.StringType }
-                            )
-                        ) { backStackEntry ->
-                            val groupId = backStackEntry.arguments?.getString("groupId") ?: return@composable
-                            PaymentScreen(
-                                navController = navController,
-                                groupId = groupId
-                            )
-                        }
+                            composable(
+                                route = "group/{groupId}/add-members",
+                                arguments = listOf(
+                                    navArgument("groupId") { type = NavType.StringType }
+                                )
+                            ) { backStackEntry ->
+                                val groupId =
+                                    backStackEntry.arguments?.getString("groupId")
+                                        ?: return@composable
+                                AddMembersScreen(
+                                    navController = navController,
+                                    groupId = groupId
+                                )
+                            }
 
-                        composable(
-                            route = "payment/{contributionId}/verify",
-                            arguments = listOf(
-                                navArgument("contributionId") { type = NavType.StringType }
-                            )
-                        ) { backStackEntry ->
-                            val contributionId = backStackEntry.arguments?.getString("contributionId") ?: return@composable
-                            PaymentVerificationScreen(
-                                navController = navController,
-                                contributionId = contributionId
-                            )
-                        }
+                            composable(
+                                route = "payment/{groupId}",
+                                arguments = listOf(
+                                    navArgument("groupId") { type = NavType.StringType }
+                                )
+                            ) { backStackEntry ->
+                                val groupId = backStackEntry.arguments?.getString("groupId")
+                                    ?: return@composable
+                                PaymentScreen(
+                                    navController = navController,
+                                    groupId = groupId
+                                )
+                            }
 
-                        composable("profile") {
-                            ProfileScreen(navController = navController)
-                        }
-                        composable("profile/edit") {
-                            EditProfileScreen(navController = navController)
-                        }
-                        composable("profile/kyc") {
-                            KycScreen(navController = navController)
-                        }
+                            composable(
+                                route = "payment/{contributionId}/verify",
+                                arguments = listOf(
+                                    navArgument("contributionId") { type = NavType.StringType }
+                                )
+                            ) { backStackEntry ->
+                                val contributionId =
+                                    backStackEntry.arguments?.getString("contributionId")
+                                        ?: return@composable
+                                PaymentVerificationScreen(
+                                    navController = navController,
+                                    contributionId = contributionId
+                                )
+                            }
 
-                        composable("notifications") {
-                            NotificationsScreen(navController = navController)
+                            composable("profile") {
+                                ProfileScreen(navController = navController)
+                            }
+                            composable("profile/edit") {
+                                EditProfileScreen(navController = navController)
+                            }
+                            composable("profile/kyc") {
+                                KycScreen(navController = navController)
+                            }
+
+                            composable("notifications") {
+                                NotificationsScreen(navController = navController)
+                            }
                         }
                     }
                 }

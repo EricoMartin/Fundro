@@ -76,7 +76,7 @@
              FIREBASE MESSAGING SERVICE
              ======================================== -->
         <service
-            android:name=".core.notificationEntity.FundroFirebaseMessagingService"
+            android:name=".core.notification.FundroFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

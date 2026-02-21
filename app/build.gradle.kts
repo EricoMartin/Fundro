@@ -8,7 +8,7 @@ plugins {
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
     id("org.jetbrains.kotlin.plugin.serialization")
-    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
+    id("com.google.devtools.ksp")
 }
 
 android {

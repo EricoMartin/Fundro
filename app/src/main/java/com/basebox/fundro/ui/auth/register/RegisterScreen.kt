@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.basebox.fundro.ui.components.feedback.LocalFeedbackManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,30 +36,57 @@ fun RegisterScreen(
     val uiState by viewModel.uiState.collectAsState()
     val registerSuccess by viewModel.registerSuccess.collectAsState()
     val focusManager = LocalFocusManager.current
+    val feedbackManager = LocalFeedbackManager.current
+
 
     // Navigate to login on successful registration
+
     LaunchedEffect(registerSuccess) {
-        if (registerSuccess) {
-            navController.navigate("login") {
-                popUpTo("register") { inclusive = true }
-            }
+        if (registerSuccess){
+            feedbackManager.showSuccess(
+                title = "Login Successful",
+                message = "Welcome back!",
+                autoDismiss = false,
+                onDismiss = {
+                    navController.navigate("login") {
+                        popUpTo("register") { inclusive = true }
+                    }
+                    viewModel.onRegisterSuccessHandled()
+                }
+            )
         }
     }
 
-    // Show error snackbar
-    val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(uiState.error) {
-        uiState.error?.let {
-            snackbarHostState.showSnackbar(
-                message = it,
-                duration = SnackbarDuration.Short
+        uiState.error?.let { error ->
+            feedbackManager.showError(
+                title = "Login Failed",
+                message = error,
+                onRetry = {
+                    viewModel.register()
+                    viewModel.clearError()
+                },
+                onDismiss = {
+                    viewModel.clearError()
+                }
             )
-            viewModel.clearError()
         }
     }
+
+//    // Show error snackbar
+//    val snackbarHostState = remember { SnackbarHostState() }
+//    LaunchedEffect(uiState.error) {
+//        uiState.error?.let {
+//            snackbarHostState.showSnackbar(
+//                message = it,
+//                duration = SnackbarDuration.Short
+//            )
+//            viewModel.clearError()
+//        }
+//    }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+//        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         Box(
             modifier = Modifier

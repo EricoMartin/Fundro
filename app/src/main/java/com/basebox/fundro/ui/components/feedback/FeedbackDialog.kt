@@ -1,4 +1,4 @@
-package com.basebox.fundro.core.ui.components.feedback
+package com.basebox.fundro.ui.components.feedback
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -20,7 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.basebox.fundro.core.ui.theme.FundroGreen
+import com.basebox.fundro.ui.theme.FundroGreen
+import com.basebox.fundro.ui.theme.FundroOrange
 import kotlinx.coroutines.delay
 
 enum class FeedbackType {
@@ -251,7 +252,7 @@ private fun getColorForType(type: FeedbackType): Color {
     return when (type) {
         FeedbackType.SUCCESS -> FundroGreen
         FeedbackType.ERROR -> MaterialTheme.colorScheme.error
-        FeedbackType.WARNING -> com.basebox.fundro.core.ui.theme.FundroOrange
+        FeedbackType.WARNING -> FundroOrange
         FeedbackType.INFO -> MaterialTheme.colorScheme.primary
     }
 }

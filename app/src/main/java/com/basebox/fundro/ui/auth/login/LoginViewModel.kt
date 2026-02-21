@@ -61,7 +61,7 @@ class LoginViewModel @Inject constructor(
                     }
 
                     is ApiResult.Success -> {
-                        _uiState.update { it.copy(isLoading = false, error = null) }
+                        _uiState.update { it.copy(isLoading = false, error = null, showSuccessDialog = true) }
                         _loginSuccess.value = true
                         Timber.d("Login successful: ${result.data.email}")
                     }
@@ -78,6 +78,10 @@ class LoginViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onLoginSuccessHandled() {
+        _loginSuccess.value = false
     }
 
     fun clearError() {

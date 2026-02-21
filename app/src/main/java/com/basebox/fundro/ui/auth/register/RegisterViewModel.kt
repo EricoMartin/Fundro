@@ -187,7 +187,7 @@ class RegisterViewModel @Inject constructor(
                     }
 
                     is ApiResult.Success -> {
-                        _uiState.update { it.copy(isLoading = false, error = null) }
+                        _uiState.update { it.copy(isLoading = false, error = null, showSuccessDialog = true) }
                         _registerSuccess.value = true
                         Timber.d("Registration successful: ${result.data.email}")
                     }
@@ -206,6 +206,9 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
+    fun onRegisterSuccessHandled() {
+        _registerSuccess.value = false
+    }
     fun clearError() {
         _uiState.update { it.copy(error = null) }
     }
