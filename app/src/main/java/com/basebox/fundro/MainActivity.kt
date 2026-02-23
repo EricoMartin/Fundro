@@ -10,6 +10,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,8 +19,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.basebox.fundro.core.payment.PaystackHelper
+import com.basebox.fundro.di.NavigationEvent
+import com.basebox.fundro.di.NavigationManager
 import com.basebox.fundro.ui.auth.login.LoginScreen
 import com.basebox.fundro.ui.auth.register.RegisterScreen
+import com.basebox.fundro.ui.components.feedback.LocalFeedbackManager
 import com.basebox.fundro.ui.components.feedback.ProvideFeedbackManager
 import com.basebox.fundro.ui.group.create.CreateGroupScreen
 import com.basebox.fundro.ui.group.detail.GroupDetailScreen
@@ -35,9 +39,13 @@ import com.basebox.fundro.ui.profile.kyc.KycScreen
 import com.basebox.fundro.ui.splash.SplashScreen
 import com.basebox.fundro.ui.theme.FundroTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var navigationManager: NavigationManager // Inject the manager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -45,7 +53,6 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
 
         PaystackHelper.initialize()
-
 
         setContent {
             FundroTheme {
@@ -55,7 +62,32 @@ class MainActivity : ComponentActivity() {
                         color = MaterialTheme.colorScheme.background
                     ) {
                         val navController = rememberNavController()
+                        val feedbackManager = LocalFeedbackManager.current
 
+                        LaunchedEffect(navController) {
+                            feedbackManager.setNavController(navController)
+                        }
+
+//                         Listen for navigation events here
+                        LaunchedEffect(Unit) {
+                            navigationManager.events.collect { event ->
+                                when (event) {
+                                    is NavigationEvent.NavigateTo -> {
+                                        navController.navigate(event.route)
+                                    }
+                                    is NavigationEvent.NavigateAndPopUpTo -> {
+                                        navController.navigate(event.route) {
+                                            popUpTo(event.popUpTo) {
+                                                inclusive = event.inclusive
+                                            }
+                                        }
+                                    }
+                                    NavigationEvent.NavigateBack -> {
+                                        navController.popBackStack()
+                                    }
+                                }
+                            }
+                        }
                         NavHost(
                             navController = navController,
                             startDestination = "splash"
@@ -69,7 +101,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable("login") {
-                                LoginScreen(navController = navController)
+                                LoginScreen(navController= navController)
                             }
 
                             composable("register") {

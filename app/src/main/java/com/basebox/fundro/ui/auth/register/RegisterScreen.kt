@@ -38,20 +38,17 @@ fun RegisterScreen(
     val focusManager = LocalFocusManager.current
     val feedbackManager = LocalFeedbackManager.current
 
-
     // Navigate to login on successful registration
-
-    LaunchedEffect(registerSuccess) {
-        if (registerSuccess){
+    LaunchedEffect(uiState.registerSuccess) {
+        if (uiState.registerSuccess){
             feedbackManager.showSuccess(
-                title = "Login Successful",
-                message = "Welcome back!",
+                title = "Registered Successfully",
+                message = "Welcome To Fundro!",
                 autoDismiss = false,
                 onDismiss = {
                     navController.navigate("login") {
                         popUpTo("register") { inclusive = true }
                     }
-                    viewModel.onRegisterSuccessHandled()
                 }
             )
         }

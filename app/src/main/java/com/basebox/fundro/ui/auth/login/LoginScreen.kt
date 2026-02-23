@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.basebox.fundro.ui.components.feedback.LocalFeedbackManager
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,13 +36,12 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val loginSuccess by viewModel.loginSuccess.collectAsState()
     val focusManager = LocalFocusManager.current
     val feedbackManager = LocalFeedbackManager.current
 
     // Navigate to home on successful login
-    LaunchedEffect(loginSuccess) {
-        if (loginSuccess){
+    LaunchedEffect(uiState.loginSuccess) {
+        if (uiState.loginSuccess){
             feedbackManager.showSuccess(
                 title = "Login Successful",
                 message = "Welcome back!",
@@ -50,7 +50,6 @@ fun LoginScreen(
                     navController.navigate("home") {
                         popUpTo("login") { inclusive = true }
                     }
-                    viewModel.onLoginSuccessHandled()
                 }
             )
         }

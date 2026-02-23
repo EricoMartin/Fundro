@@ -29,4 +29,5 @@ data class RegisterUiState(
     val accountHolderNameError: String? = null,
     val bankCodeError: String? = null,
     val showSuccessDialog: Boolean = false,
+    val registerSuccess: Boolean = false
 )

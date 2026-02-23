@@ -43,6 +43,8 @@ class ProfileViewModel @Inject constructor(
                                 error = null
                             )
                         }
+                        Timber.d("Kyc Status: ${result.data.kycStatus}")
+
                         Timber.d("Profile loaded: ${result.data.fullName}")
                     }
 

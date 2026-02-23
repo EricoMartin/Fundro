@@ -7,6 +7,8 @@ import com.basebox.fundro.core.util.isValidEmail
 import com.basebox.fundro.core.util.isValidPassword
 import com.basebox.fundro.core.util.isValidPhoneNumber
 import com.basebox.fundro.core.util.isValidUsername
+import com.basebox.fundro.di.NavigationEvent
+import com.basebox.fundro.di.NavigationManager
 import com.basebox.fundro.domain.usecase.RegisterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val registerUseCase: RegisterUseCase
+    private val registerUseCase: RegisterUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterUiState())
@@ -187,7 +189,7 @@ class RegisterViewModel @Inject constructor(
                     }
 
                     is ApiResult.Success -> {
-                        _uiState.update { it.copy(isLoading = false, error = null, showSuccessDialog = true) }
+                        _uiState.update { it.copy(isLoading = false, registerSuccess = true, error = null, showSuccessDialog = true) }
                         _registerSuccess.value = true
                         Timber.d("Registration successful: ${result.data.email}")
                     }
@@ -206,9 +208,6 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
-    fun onRegisterSuccessHandled() {
-        _registerSuccess.value = false
-    }
     fun clearError() {
         _uiState.update { it.copy(error = null) }
     }

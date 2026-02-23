@@ -3,6 +3,9 @@ package com.basebox.fundro.ui.auth.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.basebox.fundro.core.network.ApiResult
+import com.basebox.fundro.core.security.SecureStorage
+import com.basebox.fundro.di.NavigationEvent
+import com.basebox.fundro.di.NavigationManager
 import com.basebox.fundro.domain.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,7 +64,8 @@ class LoginViewModel @Inject constructor(
                     }
 
                     is ApiResult.Success -> {
-                        _uiState.update { it.copy(isLoading = false, error = null, showSuccessDialog = true) }
+
+                        _uiState.update { it.copy(isLoading = false, loginSuccess = true, error = null, showSuccessDialog = true) }
                         _loginSuccess.value = true
                         Timber.d("Login successful: ${result.data.email}")
                     }
@@ -70,6 +74,7 @@ class LoginViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
+                                loginSuccess = false,
                                 error = result.message
                             )
                         }
@@ -80,9 +85,6 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun onLoginSuccessHandled() {
-        _loginSuccess.value = false
-    }
 
     fun clearError() {
         _uiState.update { it.copy(error = null) }

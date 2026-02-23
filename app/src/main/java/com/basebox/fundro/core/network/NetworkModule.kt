@@ -101,8 +101,6 @@ object NetworkModule {
         return retrofit.create(PaymentApi::class.java)
     }
 
-    // Add inside NetworkModule:
-
     @Provides
     @Singleton
     fun provideNotificationApi(retrofit: Retrofit): NotificationApi {

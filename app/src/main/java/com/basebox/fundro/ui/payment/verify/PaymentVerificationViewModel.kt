@@ -20,6 +20,8 @@ class PaymentVerificationViewModel @Inject constructor(
 
     private val contributionId: String = checkNotNull(savedStateHandle["contributionId"])
 
+
+
     private val _uiState = MutableStateFlow(PaymentVerificationUiState())
     val uiState: StateFlow<PaymentVerificationUiState> = _uiState.asStateFlow()
 
@@ -31,7 +33,7 @@ class PaymentVerificationViewModel @Inject constructor(
         viewModelScope.launch {
             var attempts = 0
             val maxAttempts = 10
-            val delayBetweenAttempts = 2000L // 2 seconds
+            val delayBetweenAttempts = 5000L // 5 seconds
 
             while (attempts < maxAttempts) {
                 attempts++
@@ -44,6 +46,7 @@ class PaymentVerificationViewModel @Inject constructor(
                     )
                 }
 
+                Timber.d("Contribution ID if not null is: $contributionId")
                 verifyPaymentUseCase(contributionId).collect { result ->
                     when (result) {
                         is ApiResult.Loading -> {

@@ -1,6 +1,7 @@
 package com.basebox.fundro.domain.usecase
 
 import com.basebox.fundro.core.network.ApiResult
+import com.basebox.fundro.data.remote.dto.response.UserResponse
 import com.basebox.fundro.domain.model.User
 import com.basebox.fundro.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
