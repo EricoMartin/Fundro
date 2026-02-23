@@ -2,6 +2,8 @@ package com.basebox.fundro.data.repository
 
 import com.basebox.fundro.core.network.ApiResult
 import com.basebox.fundro.core.security.SecureStorage
+import com.basebox.fundro.data.local.dao.UserDao
+import com.basebox.fundro.data.local.dto.toEntity
 import com.basebox.fundro.data.remote.api.AuthApi
 import com.basebox.fundro.data.remote.dto.request.LoginRequest
 import com.basebox.fundro.data.remote.dto.request.RegisterRequest
@@ -17,7 +19,8 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val authApi: AuthApi,
-    private val secureStorage: SecureStorage
+    private val secureStorage: SecureStorage,
+    private val userDao: UserDao
 ) : AuthRepository {
 
     override suspend fun register(
@@ -161,6 +164,31 @@ class AuthRepositoryImpl @Inject constructor(
         emit(ApiResult.Loading)
 
         try {
+            val userId = secureStorage.getUserId() ?: throw Exception("User ID not found")
+
+            val currentLocalUser = userDao.getUser(userId)
+
+            if (currentLocalUser != null) {
+                val user = User(
+                    id = currentLocalUser.id,
+                    username = currentLocalUser.username,
+                    fullName = currentLocalUser.fullName,
+                    email = currentLocalUser.email,
+                    phoneNumber = currentLocalUser.phoneNumber,
+                    role = currentLocalUser.role,
+                    kycStatus = currentLocalUser.kycStatus,
+                    isActive = currentLocalUser.isActive,
+                    bvn = currentLocalUser.bvn,
+                    bankAccountNumber = currentLocalUser.bankAccountNumber,
+                    bankCode = currentLocalUser.bankCode,
+                    bankName = currentLocalUser.bankName,
+                    accountHolderName = currentLocalUser.accountHolderName,
+                    createdAt = currentLocalUser.createdAt?: "",
+                    )
+                emit(ApiResult.Success(user))
+                return@flow
+            }
+
             val response = authApi.getCurrentUser()
 
             if (response.isSuccessful && response.body() != null) {
@@ -182,6 +210,8 @@ class AuthRepositoryImpl @Inject constructor(
                     accountHolderName = userResponse.accountHolderName,
                     createdAt = userResponse.createdAt,
                 )
+                userDao.deleteUser(user.id)
+                userDao.insertUser(user.toEntity())
 
                 emit(ApiResult.Success(user))
             } else {
@@ -192,6 +222,31 @@ class AuthRepositoryImpl @Inject constructor(
                 emit(ApiResult.Error(errorMessage, response.code()))
             }
         } catch (e: Exception) {
+            val userId = secureStorage.getUserId() ?: throw Exception("User ID not found")
+
+            val currentLocalUser = userDao.getUser(userId)
+
+            if (currentLocalUser != null) {
+                val user = User(
+                    id = currentLocalUser.id,
+                    username = currentLocalUser.username,
+                    fullName = currentLocalUser.fullName,
+                    email = currentLocalUser.email,
+                    phoneNumber = currentLocalUser.phoneNumber,
+                    role = currentLocalUser.role,
+                    kycStatus = currentLocalUser.kycStatus,
+                    isActive = currentLocalUser.isActive,
+                    bvn = currentLocalUser.bvn,
+                    bankAccountNumber = currentLocalUser.bankAccountNumber,
+                    bankCode = currentLocalUser.bankCode,
+                    bankName = currentLocalUser.bankName,
+                    accountHolderName = currentLocalUser.accountHolderName,
+                    createdAt = currentLocalUser.createdAt?: "",
+                )
+                emit(ApiResult.Success(user))
+                Timber.d("📦 Emitted $user cached user due to network error")
+                return@flow
+            }
             val errorMessage = "Network error: ${e.localizedMessage}"
             emit(ApiResult.Error(errorMessage))
             Timber.e(e, "Get current user error")

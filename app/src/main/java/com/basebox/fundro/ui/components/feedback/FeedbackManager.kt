@@ -1,17 +1,23 @@
 package com.basebox.fundro.ui.components.feedback
 
 import androidx.compose.runtime.*
+import androidx.navigation.NavController
 
 class FeedbackManager {
     private val _dialogState = mutableStateOf<FeedbackConfig?>(null)
     val dialogState: State<FeedbackConfig?> = _dialogState
 
+
+    fun setNavController(navController: NavController) {
+        _dialogState.value?.navController = navController
+    }
     fun showSuccess(
         title: String,
         message: String,
         buttonText: String = "OK",
         autoDismiss: Boolean = false,
-        onDismiss: () -> Unit = {}
+        onDismiss: (() -> Unit)? = null,
+        onNavigate: ((NavController) -> Unit)? = null
     ) {
         _dialogState.value = FeedbackConfig(
             type = FeedbackType.SUCCESS,
@@ -19,10 +25,16 @@ class FeedbackManager {
             message = message,
             primaryButtonText = buttonText,
             autoDismissMs = if (autoDismiss) 3000L else null,
-            onDismiss = {
-                onDismiss()
+            onPrimaryClick = {
                 _dialogState.value = null
-            }
+                onDismiss?.invoke()
+            },
+            onDismiss = {
+                onNavigate
+                onDismiss?.invoke()
+                _dialogState.value = null
+            },
+            onNavigate = onNavigate
         )
     }
 
@@ -31,7 +43,8 @@ class FeedbackManager {
         message: String,
         buttonText: String = "OK",
         onRetry: (() -> Unit)? = null,
-        onDismiss: () -> Unit = {}
+        onDismiss: (() -> Unit)? = null,
+        onNavigate: ((NavController) -> Unit)? = null
     ) {
         _dialogState.value = FeedbackConfig(
             type = FeedbackType.ERROR,
@@ -40,14 +53,18 @@ class FeedbackManager {
             primaryButtonText = buttonText,
             secondaryButtonText = if (onRetry != null) "Retry" else null,
             onPrimaryClick = {
-                onDismiss()
                 _dialogState.value = null
+                onDismiss?.invoke()
             },
-            onSecondaryClick = onRetry,
-            onDismiss = {
-                onDismiss()
+            onSecondaryClick = {
                 _dialogState.value = null
-            }
+                onRetry?.invoke()
+            },
+            onDismiss = {
+                _dialogState.value = null
+                onDismiss?.invoke()
+            },
+            onNavigate = onNavigate
         )
     }
 
@@ -56,8 +73,9 @@ class FeedbackManager {
         message: String,
         confirmText: String = "Continue",
         cancelText: String = "Cancel",
-        onConfirm: () -> Unit,
-        onCancel: () -> Unit = {}
+        onConfirm: (() -> Unit)? = null,
+        onCancel: (() -> Unit)? = null,
+        onNavigate: ((NavController) -> Unit)?
     ) {
         _dialogState.value = FeedbackConfig(
             type = FeedbackType.WARNING,
@@ -66,16 +84,39 @@ class FeedbackManager {
             primaryButtonText = confirmText,
             secondaryButtonText = cancelText,
             onPrimaryClick = {
-                onConfirm()
                 _dialogState.value = null
+                onConfirm?.invoke()
             },
             onSecondaryClick = {
-                onCancel()
                 _dialogState.value = null
+                onCancel?.invoke()
             },
             onDismiss = {
-                onCancel()
                 _dialogState.value = null
+                onCancel?.invoke()
+            },
+            onNavigate = onNavigate
+        )
+    }
+
+    fun showInfo(
+        title: String,
+        message: String,
+        buttonText: String = "Got it",
+        onDismiss: (() -> Unit)? = null
+    ) {
+        _dialogState.value = FeedbackConfig(
+            type = FeedbackType.INFO,
+            title = title,
+            message = message,
+            primaryButtonText = buttonText,
+            onPrimaryClick = {
+                _dialogState.value = null
+                onDismiss?.invoke()
+            },
+            onDismiss = {
+                _dialogState.value = null
+                onDismiss?.invoke()
             }
         )
     }
@@ -101,7 +142,8 @@ fun ProvideFeedbackManager(content: @Composable () -> Unit) {
         feedbackManager.dialogState.value?.let { config ->
             FeedbackDialog(
                 config = config,
-                onDismiss = { feedbackManager.dismiss() }
+                onDismiss = { feedbackManager.dismiss() },
+                navController = feedbackManager.dialogState.value?.navController
             )
         }
     }

@@ -19,6 +19,10 @@ interface GroupMemberDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMembers(members: List<GroupMemberEntity>)
 
+    @Query("SELECT * FROM group_members WHERE id = :memberId")
+    suspend fun getMemberById(memberId: String): GroupMemberEntity?
+
+
     @Query("DELETE FROM group_members WHERE group_id = :groupId")
     suspend fun deleteMembersByGroup(groupId: String)
 

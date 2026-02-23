@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.basebox.fundro.ui.components.ErrorState
+import com.basebox.fundro.ui.components.OfflineIndicator
+import com.basebox.fundro.ui.components.rememberNetworkState
 import com.basebox.fundro.ui.home.composables.HomeContent
 import com.basebox.fundro.ui.home.composables.HomeTopBar
 import com.basebox.fundro.ui.theme.FundroTextSecondary
@@ -37,6 +39,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val isOnline by rememberNetworkState()
     val logoutSuccess by viewModel.logoutSuccess.collectAsState()
 
     // Navigate to login on logout
@@ -53,7 +56,7 @@ fun HomeScreen(
             HomeTopBar(
                 userName = uiState.user?.fullName ?: "",
                 onProfileClick = { navController.navigate("profile") },
-                onNotificationClick = { navController.navigate("notifications")  }
+                onNotificationClick = { navController.navigate("notifications") }
             )
         },
         floatingActionButton = {
@@ -101,6 +104,7 @@ fun HomeScreen(
                 }
 
                 else -> {
+                    OfflineIndicator(isOffline = !isOnline)
                     HomeContent(
                         uiState = uiState,
                         viewModel = viewModel,

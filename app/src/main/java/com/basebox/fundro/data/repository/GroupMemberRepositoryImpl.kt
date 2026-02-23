@@ -1,6 +1,10 @@
 package com.basebox.fundro.data.repository
 
 import com.basebox.fundro.core.network.ApiResult
+import com.basebox.fundro.data.local.dao.GroupDao
+import com.basebox.fundro.data.local.dao.GroupMemberDao
+import com.basebox.fundro.data.local.dto.toDomain
+import com.basebox.fundro.data.local.dto.toEntity
 import com.basebox.fundro.data.remote.api.GroupMemberApi
 import com.basebox.fundro.data.remote.dto.response.getOrThrow
 import com.basebox.fundro.domain.model.GroupMember
@@ -13,13 +17,21 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class GroupMemberRepositoryImpl @Inject constructor(
-    private val groupMemberApi: GroupMemberApi
+    private val groupMemberApi: GroupMemberApi,
+    private val groupMemberDao: GroupMemberDao,
+    private val groupDao: GroupDao
 ) : GroupMemberRepository {
 
     override suspend fun getGroupMembers(groupId: String): Flow<ApiResult<List<GroupMember>>> = flow {
         emit(ApiResult.Loading)
 
         try {
+            val cachedGroupMembers = groupMemberDao.getMembers(groupId)
+            if (cachedGroupMembers.isNotEmpty()) {
+                emit(ApiResult.Success(cachedGroupMembers.map { it.toDomain() }))
+                Timber.d("📦 Emitted ${cachedGroupMembers.size} cached members")
+            }
+
             val response = groupMemberApi.getGroupMembers(groupId)
 
             if (response.isSuccessful && response.body() != null) {
@@ -38,6 +50,11 @@ class GroupMemberRepositoryImpl @Inject constructor(
                     )
                 }
 
+                val entities = members.map { it.toEntity(groupId) }
+                groupMemberDao.deleteMembersByGroup(groupId)
+                groupMemberDao.insertMembers(entities)
+                Timber.d("💾 Saving ${members.size} members to cache...")
+
                 emit(ApiResult.Success(members))
                 Timber.d("Fetched ${members.size} members for group $groupId")
             } else {
@@ -46,9 +63,17 @@ class GroupMemberRepositoryImpl @Inject constructor(
                 Timber.e("Get members failed: $errorMessage")
             }
         } catch (e: Exception) {
-            val errorMessage = "Network error: ${e.localizedMessage}"
-            emit(ApiResult.Error(errorMessage))
-            Timber.e(e, "Get members error")
+            val cachedGroupMembers = groupMemberDao.getMembers(groupId)
+            if (cachedGroupMembers.isNotEmpty()) {
+                emit(ApiResult.Success(cachedGroupMembers.map { it.toDomain()}))
+                Timber.d("📦 Using cached data due to network error")
+            } else {
+                emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
+
+                val errorMessage = "Network error: ${e.localizedMessage}"
+                emit(ApiResult.Error(errorMessage))
+                Timber.e(e, "Get members error")
+            }
         }
     }.flowOn(Dispatchers.IO)
 
@@ -72,6 +97,15 @@ class GroupMemberRepositoryImpl @Inject constructor(
                     joinedAt = memberResponse.joinedAt,
                     paidAt = memberResponse.paidAt
                 )
+
+                val acceptedCachedMember = groupMemberDao.getMemberById(member.id)
+                if (acceptedCachedMember != null) {
+                    Timber.d("📦 User already accepted invitation")
+                } else {
+                    groupMemberDao.insertMember(member.toEntity(groupId))
+                    Timber.d("💾 Saving accepted member to cache: ${member.fullName}")
+                    emit(ApiResult.Success(member))
+                }
 
                 emit(ApiResult.Success(member))
                 Timber.d("Joined group successfully")

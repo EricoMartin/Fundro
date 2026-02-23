@@ -14,15 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavController
 import com.basebox.fundro.ui.theme.FundroGreen
 import com.basebox.fundro.ui.theme.FundroOrange
 import kotlinx.coroutines.delay
+import timber.log.Timber
 
 enum class FeedbackType {
     SUCCESS,
@@ -38,26 +39,33 @@ data class FeedbackConfig(
     val primaryButtonText: String = "OK",
     val secondaryButtonText: String? = null,
     val autoDismissMs: Long? = null,
-    val onPrimaryClick: () -> Unit = {},
+    val onPrimaryClick: (() -> Unit)? = null,
     val onSecondaryClick: (() -> Unit)? = null,
-    val onDismiss: () -> Unit = {}
+    val onDismiss: (() -> Unit)? = null,
+    val onNavigate: ((NavController) -> Unit)? = null,
+    var navController: NavController? = null
 )
 
 @Composable
 fun FeedbackDialog(
     config: FeedbackConfig,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    navController: NavController?
 ) {
     // Auto-dismiss logic
     LaunchedEffect(config.autoDismissMs) {
         config.autoDismissMs?.let { ms ->
             delay(ms)
+            config.onDismiss?.invoke()
             onDismiss()
         }
     }
 
     Dialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = {
+            config.onDismiss?.invoke()
+            onDismiss()
+        },
         properties = DialogProperties(
             dismissOnBackPress = true,
             dismissOnClickOutside = true,
@@ -66,7 +74,11 @@ fun FeedbackDialog(
     ) {
         FeedbackDialogContent(
             config = config,
-            onDismiss = onDismiss
+            onDismiss = {
+                config.onDismiss?.invoke()
+                onDismiss()
+            },
+            navController = navController
         )
     }
 }
@@ -74,7 +86,8 @@ fun FeedbackDialog(
 @Composable
 private fun FeedbackDialogContent(
     config: FeedbackConfig,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    navController: NavController? = null
 ) {
     val scale = remember { Animatable(0.8f) }
 
@@ -149,6 +162,12 @@ private fun FeedbackDialogContent(
                             onClick = {
                                 config.onSecondaryClick?.invoke()
                                 onDismiss()
+                                if (navController != null) {
+                                    config.onNavigate?.invoke(navController)
+                                } else {
+                                    // Log an error if the controller is missing
+                                    Timber.e("NavController not set in FeedbackManager, cannot navigate.")
+                                }
                             },
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp)
@@ -159,8 +178,14 @@ private fun FeedbackDialogContent(
                         // Primary button
                         Button(
                             onClick = {
-                                config.onPrimaryClick()
+                                config.onPrimaryClick?.invoke()
                                 onDismiss()
+                                if (navController != null) {
+                                    config.onNavigate?.invoke(navController)
+                                } else {
+                                    // Log an error if the controller is missing
+                                    Timber.e("NavController not set in FeedbackManager, cannot navigate.")
+                                }
                             },
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp),
@@ -175,8 +200,14 @@ private fun FeedbackDialogContent(
                     // Single button
                     Button(
                         onClick = {
-                            config.onPrimaryClick()
+                            config.onPrimaryClick?.invoke()
                             onDismiss()
+                            if (navController != null) {
+                                config.onNavigate?.invoke(navController)
+                            } else {
+                                // Log an error if the controller is missing
+                                Timber.e("NavController not set in FeedbackManager, cannot navigate.")
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
