@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.basebox.fundro.core.network.ApiResult
 import com.basebox.fundro.domain.usecase.AcceptMembershipUseCase
+import com.basebox.fundro.domain.usecase.DeclineMembershipUseCase
 import com.basebox.fundro.domain.usecase.GetCurrentUserUseCase
 import com.basebox.fundro.domain.usecase.GetInvitedGroupsUseCase
 import com.basebox.fundro.domain.usecase.GetMyGroupsUseCase
@@ -23,6 +24,7 @@ class HomeViewModel @Inject constructor(
     private val logoutUseCase: LogoutUseCase,
     private val joinGroupUseCase: JoinGroupUseCase,
     private val acceptMembershipUseCase: AcceptMembershipUseCase,
+    private val declineMembershipUseCase: DeclineMembershipUseCase,
     private val getInvitedGroupsUseCase: GetInvitedGroupsUseCase
 ) : ViewModel() {
 
@@ -166,12 +168,49 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun declineMembership(groupId: String, userId: String) {
+        viewModelScope.launch {
+            declineMembershipUseCase(groupId, userId).collect { result ->
+                when (result) {
+                    is ApiResult.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                isRefreshing = false,
+                                error = null,
+                                declinedMember = result.data
+                            )
+                        }
+                        // Refresh groups to show updated status
+                        loadGroups()
+                        Timber.d("Declined membership successfully")
+                    }
+
+                    is ApiResult.Error -> {
+                        _uiState.update { it.copy(error = result.message) }
+                    }
+
+                    is ApiResult.Loading -> {
+                        _uiState.update {
+                            it.copy(
+                                isRefreshing = true,
+                                isLoading = true
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     fun selectTab(tab: HomeTab) {
         _uiState.update { it.copy(selectedTab = tab) }
     }
 
     fun refresh() {
         loadGroups(isRefreshing = true)
+        loadInvitedGroups()
+        selectTab(HomeTab.ALL)
     }
 
     fun logout() {

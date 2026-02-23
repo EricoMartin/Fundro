@@ -107,6 +107,9 @@ fun HomeContent(
                         showInviteActions = uiState.selectedTab == HomeTab.INVITATIONS,
                         onAcceptInvite = if (uiState.selectedTab == HomeTab.INVITATIONS) {
                             { viewModel.acceptMembership(group.id, uiState.user?.id!!) }
+                        } else null,
+                        onDeclineInvite = if (uiState.selectedTab == HomeTab.INVITATIONS) {
+                            { viewModel.declineMembership(group.id, uiState.user?.id!!) }
                         } else null
                     )
                 }
@@ -124,6 +127,7 @@ fun GroupInviteCard(
     group: Group,
     onClick: () -> Unit,
     onAcceptInvite: (() -> Unit)? = null,
+    onDeclineInvite: (() -> Unit),
     modifier: Modifier = Modifier,
     showInviteActions: Boolean = false
 ) {
@@ -162,7 +166,7 @@ fun GroupInviteCard(
                     }
 
                     OutlinedButton(
-                        onClick = { onAcceptInvite },
+                        onClick = onDeclineInvite,
                         modifier = Modifier.weight(1f)
                     ) {
                         Icon(

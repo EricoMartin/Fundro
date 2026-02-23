@@ -12,6 +12,7 @@ data class HomeUiState(
     val isRefreshing: Boolean = false,
     val error: String? = null,
     val acceptedMember: GroupMember? = null,
+    val declinedMember: GroupMember? = null,
     val invitedGroups: List<Group> = emptyList(),
     val selectedTab: HomeTab = HomeTab.ALL
 )

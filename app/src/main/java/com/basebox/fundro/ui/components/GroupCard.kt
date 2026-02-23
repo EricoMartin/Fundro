@@ -43,6 +43,7 @@ fun GroupCard(
     onClick: () -> Unit,
     showInviteActions: Boolean = false,
     onAcceptInvite: (() -> Unit)? = null,
+    onDeclineInvite: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Card(
