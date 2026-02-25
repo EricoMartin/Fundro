@@ -1,8 +1,8 @@
+
 <div align="center">
-# Fundro - Secure Group Payment Platform
 
 
-
+# **Fundro - Secure Group Payment Platform**
 
 **Trustworthy Group Contributions Made Simple**
 
