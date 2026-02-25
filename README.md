@@ -108,7 +108,7 @@ Traditional group contribution systems in Nigeria face critical challenges:
 - **Dependency Injection**: Hilt (Dagger)
 - **Networking**: Retrofit 2 + OkHttp
 - **Image Loading**: Coil
-- **Database**: Room (Planned)
+- **Database**: Room
 - **Security**: EncryptedSharedPreferences
 - **Payments**: Paystack Android SDK
 - **Notifications**: Firebase Cloud Messaging
