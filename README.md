@@ -1,7 +1,8 @@
-# Fundro - Secure Group Payment Platform
 
 <div align="center">
 
+
+# **Fundro - Secure Group Payment Platform**
 
 **Trustworthy Group Contributions Made Simple**
 
@@ -108,7 +109,7 @@ Traditional groupEntity contribution systems in Nigeria face critical challenges
 - **Dependency Injection**: Hilt (Dagger)
 - **Networking**: Retrofit 2 + OkHttp
 - **Image Loading**: Coil
-- **Database**: Room (Planned)
+- **Database**: Room
 - **Security**: EncryptedSharedPreferences
 - **Payments**: Paystack Android SDK
 - **Notifications**: Firebase Cloud Messaging
@@ -127,7 +128,7 @@ Traditional groupEntity contribution systems in Nigeria face critical challenges
 ### Option 1: Download APK (Recommended)
 
 1. **Download the latest release:**
-    - Visit: [Releases Page](https://github.com/yourusername/fundro/releases)
+    - Visit: [Releases Page](https://drive.google.com/file/d/1jD605DJC4mwbr4JfZo1V0yYpN2CXfj6-/view?usp=sharing)
     - Download: `fundro-v1.0.0.apk`
 
 2. **Enable Unknown Sources** (if needed):
