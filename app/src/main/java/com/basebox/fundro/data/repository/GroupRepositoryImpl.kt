@@ -77,9 +77,6 @@ class GroupRepositoryImpl @Inject constructor(
                 emit(ApiResult.Success(groups))
                 Timber.d("Fetched ${groups.size} groups")
             } else {
-                if (cachedGroups.isEmpty()) {
-                    emit(ApiResult.Error("Failed to fetch groups"))
-                }
                 val errorMessage = when (response.code()) {
                     401 -> "Session expired. Please login again."
                     else -> "Failed to fetch groups: ${response.message()}"
@@ -98,9 +95,9 @@ class GroupRepositoryImpl @Inject constructor(
             } else {
                 emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
             }
-
-            val errorMessage = "Network error: ${e.localizedMessage}"
-            emit(ApiResult.Error(errorMessage))
+//
+//            val errorMessage = "Network error: ${e.localizedMessage}"
+//            emit(ApiResult.Error(errorMessage))
             Timber.e(e, "Get groups error")
         }
     }.flowOn(Dispatchers.IO)
@@ -186,9 +183,6 @@ class GroupRepositoryImpl @Inject constructor(
 
                 emit(ApiResult.Success(groups))
             } else {
-                if (cachedGroups.isEmpty()) {
-                    emit(ApiResult.Error("Failed to fetch groups"))
-                }
                 emit(ApiResult.Error("Failed to fetch participating groups"))
             }
         } catch (e: Exception) {
@@ -244,9 +238,6 @@ class GroupRepositoryImpl @Inject constructor(
                 Timber.d("💾 Saving group to cache: ${group.name}")
                 emit(ApiResult.Success(group))
             } else {
-
-                emit(ApiResult.Error("Failed to fetch cached group"))
-
                 emit(ApiResult.Error("Failed to fetch group details: ${response.body()!!.message}"))
             }
         } catch (e: Exception) {
@@ -375,8 +366,6 @@ class GroupRepositoryImpl @Inject constructor(
             } else {
                 emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
             }
-
-            emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
         }
     }.flowOn(Dispatchers.IO)
 
@@ -500,4 +489,63 @@ class GroupRepositoryImpl @Inject constructor(
             Timber.e(e, "Add members error")
         }
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun getCompletedGroups(page: Int, size: Int): Flow<ApiResult<List<Group>>> =
+        flow {
+            emit(ApiResult.Loading)
+            try {
+                val cachedGroups = groupDao.getGroupsByTypeFlow("COMPLETED")
+                    .map { entities -> entities.map { it.toDomain() } }
+                    .first()
+
+                if (cachedGroups.isNotEmpty()) {
+                    emit(ApiResult.Success(cachedGroups))
+                    Timber.d("📦 Emitted ${cachedGroups.size} cached COMPLETED groups")
+                }
+                val response = groupApi.getCompletedGroups(page, size)
+                if (response.isSuccessful && response.body() != null) {
+                    val groupsPage = response.body()!!.getOrThrow()
+                    val groups = groupsPage.groups.map { groupResponse ->
+                        Group(
+                            id = groupResponse.id,
+                            name = groupResponse.name,
+                            description = groupResponse.description,
+                            targetAmount = groupResponse.targetAmount,
+                            status = groupResponse.status,
+                            visibility = groupResponse.visibility ?: "PRIVATE",
+                            category = groupResponse.category,
+                            deadline = groupResponse.deadline,
+                            createdAt = groupResponse.createdAt,
+                            owner = Owner(
+                                id = groupResponse.owner.id,
+                                username = groupResponse.owner.username,
+                                fullName = groupResponse.owner.fullName,
+                                email = groupResponse.owner.email
+                            ),
+                            totalCollected = groupResponse . totalCollected,
+                            participantCount = groupResponse.participantCount,
+                            progressPercentage = groupResponse.progressPercentage,
+                            hasCurrentUserContributed = groupResponse.hasCurrentUserContributed,
+                        )
+                    }
+                    val entities = groups.map { it.toEntity("COMPLETED") }
+                    groupDao.deleteByType("COMPLETED")
+                    groupDao.insertGroups(entities)
+                    emit(ApiResult.Success(groups))
+                    Timber.d("Fetched ${groups.size} groups")
+                }
+            }
+            catch (e: Exception) {
+                val cachedGroups = groupDao.getGroupsByTypeFlow("COMPLETED")
+                .map { entities -> entities.map { it.toDomain() } }
+                .first()
+                if (cachedGroups.isNotEmpty()) {
+                    emit(ApiResult.Success(cachedGroups))
+                    Timber.d("📦 Using cached data due to network error")
+                    } else {
+                    emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
+                }
+
+            }
+        }.flowOn(Dispatchers.IO)
 }

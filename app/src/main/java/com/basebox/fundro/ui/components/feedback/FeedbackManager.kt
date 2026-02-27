@@ -75,7 +75,8 @@ class FeedbackManager {
         cancelText: String = "Cancel",
         onConfirm: (() -> Unit)? = null,
         onCancel: (() -> Unit)? = null,
-        onNavigate: ((NavController) -> Unit)?
+        onNavigate: ((NavController) -> Unit)?,
+        onDismiss: (() -> Unit)? = null
     ) {
         _dialogState.value = FeedbackConfig(
             type = FeedbackType.WARNING,
@@ -95,7 +96,16 @@ class FeedbackManager {
                 _dialogState.value = null
                 onCancel?.invoke()
             },
-            onNavigate = onNavigate
+            onConfirm = {
+//                onNavigate
+                onConfirm?.invoke()
+                _dialogState.value = null
+            },
+            onCancel = onCancel,
+            onNavigate = {
+                _dialogState.value = null
+                onNavigate
+            }
         )
     }
 

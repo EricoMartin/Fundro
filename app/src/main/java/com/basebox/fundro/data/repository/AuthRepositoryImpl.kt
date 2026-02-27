@@ -164,31 +164,6 @@ class AuthRepositoryImpl @Inject constructor(
         emit(ApiResult.Loading)
 
         try {
-            val userId = secureStorage.getUserId() ?: throw Exception("User ID not found")
-
-            val currentLocalUser = userDao.getUser(userId)
-
-            if (currentLocalUser != null) {
-                val user = User(
-                    id = currentLocalUser.id,
-                    username = currentLocalUser.username,
-                    fullName = currentLocalUser.fullName,
-                    email = currentLocalUser.email,
-                    phoneNumber = currentLocalUser.phoneNumber,
-                    role = currentLocalUser.role,
-                    kycStatus = currentLocalUser.kycStatus,
-                    isActive = currentLocalUser.isActive,
-                    bvn = currentLocalUser.bvn,
-                    bankAccountNumber = currentLocalUser.bankAccountNumber,
-                    bankCode = currentLocalUser.bankCode,
-                    bankName = currentLocalUser.bankName,
-                    accountHolderName = currentLocalUser.accountHolderName,
-                    createdAt = currentLocalUser.createdAt?: "",
-                    )
-                emit(ApiResult.Success(user))
-                return@flow
-            }
-
             val response = authApi.getCurrentUser()
 
             if (response.isSuccessful && response.body() != null) {
@@ -246,10 +221,11 @@ class AuthRepositoryImpl @Inject constructor(
                 emit(ApiResult.Success(user))
                 Timber.d("📦 Emitted $user cached user due to network error")
                 return@flow
+            } else {
+                val errorMessage = "Network error: ${e.localizedMessage}"
+                emit(ApiResult.Error(errorMessage))
             }
-            val errorMessage = "Network error: ${e.localizedMessage}"
-            emit(ApiResult.Error(errorMessage))
-            Timber.e(e, "Get current user error")
+            Timber.e(e, "Get current user from server error")
         }
     }.flowOn(Dispatchers.IO)
 

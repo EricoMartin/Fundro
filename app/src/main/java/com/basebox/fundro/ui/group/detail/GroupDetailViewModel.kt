@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.basebox.fundro.core.network.ApiResult
 import com.basebox.fundro.core.security.SecureStorage
+import com.basebox.fundro.di.NavigationEvent
+import com.basebox.fundro.di.NavigationManager
 import com.basebox.fundro.domain.usecase.GetGroupDetailsUseCase
 import com.basebox.fundro.domain.usecase.GetGroupMembersUseCase
 import com.basebox.fundro.ui.group.enums.DetailTab
@@ -19,6 +21,7 @@ class GroupDetailViewModel @Inject constructor(
     private val getGroupDetailsUseCase: GetGroupDetailsUseCase,
     private val getGroupMembersUseCase: GetGroupMembersUseCase,
     private val secureStorage: SecureStorage,
+    private val navigationManager: NavigationManager,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -82,39 +85,83 @@ class GroupDetailViewModel @Inject constructor(
         }
     }
 
-    fun loadGroupMembers() {
+    fun navigateToDisbursement() {
         viewModelScope.launch {
-            getGroupMembersUseCase(groupId).collect { result ->
+            getGroupDetailsUseCase(groupId).collect { result ->
                 when (result) {
                     is ApiResult.Success -> {
-                        _uiState.update {
-                            it.copy(members = result.data)
+                        if (result.data.status == "FUNDED" && result.data.totalCollected >= result.data.targetAmount) {
+                            _uiState.update {
+                                it.copy(isCompleted = true)
+                            }
+                            navigationManager.navigate(NavigationEvent.NavigateTo("disbursement/$groupId"))
+
                         }
-                        Timber.d("Loaded ${result.data.size} members")
                     }
 
                     is ApiResult.Error -> {
-                        Timber.e("Failed to load members: ${result.message}")
+                        Timber.e("Failed to load group: ${result.message}")
                     }
 
                     is ApiResult.Loading -> {
-                        // Loading handled by group details
+                        // Loading handled by group
                     }
                 }
             }
         }
     }
 
-    fun selectTab(tab: DetailTab) {
-        _uiState.update { it.copy(selectedTab = tab) }
+    fun loadGroupMembers() {
+        viewModelScope.launch {
+            getGroupMembersUseCase(groupId).collect { result ->
+                when (result) {
+                    is ApiResult.Loading -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = true,
+                                error = null
+                            )
+                        }
+                    }
+
+                    is ApiResult.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                members = result.data,
+                                isLoading = false,
+                                error = null
+                            )
+                        }
+                        Timber.d("GroupEntity members loaded: ${result.data.size}")
+                    }
+
+                    is ApiResult.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                error = result.message
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    fun refresh() {
+    fun refresh(){
         loadGroupDetails(isRefreshing = true)
         loadGroupMembers()
     }
 
-    fun clearError() {
-        _uiState.update { it.copy(error = null) }
+    fun selectTab(tab: DetailTab) {
+        _uiState.update {
+            it.copy(selectedTab = tab)
+        }
+    }
+
+    fun clearError(){
+        _uiState.update {
+            it.copy(error = null)
+        }
     }
 }

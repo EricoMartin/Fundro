@@ -28,7 +28,7 @@ fun OverviewCard(
     participatingGroups: List<Group>
 ) {
     val allGroups = myGroups + participatingGroups
-    val totalLocked = allGroups.filter { it.status == "FUNDED" }.sumOf { it.totalCollected }
+    val totalLocked = participatingGroups.filter { it.status == "FUNDED" }.sumOf { it.totalCollected }
     val totalPending = myGroups.filter { it.status == "OPEN" }.sumOf { it.totalCollected }
     val totalPooled = myGroups.sumOf { it.totalCollected }
 

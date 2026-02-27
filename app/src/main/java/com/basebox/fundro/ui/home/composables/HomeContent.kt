@@ -64,6 +64,7 @@ fun HomeContent(
             myGroupsCount = uiState.myGroups.size,
             participatingCount = uiState.participatingGroups.size,
             invitedCount = uiState.invitedGroups.size,
+            completedGroups = uiState.completedGroups.size,
             onTabSelected = onTabSelected
         )
 
@@ -75,6 +76,7 @@ fun HomeContent(
             HomeTab.OWNED -> uiState.myGroups
             HomeTab.PARTICIPATING -> uiState.participatingGroups
             HomeTab.INVITATIONS -> uiState.invitedGroups
+            HomeTab.COMPLETED -> uiState.completedGroups
         }
 
         if (groups.isEmpty()) {
@@ -84,12 +86,14 @@ fun HomeContent(
                     HomeTab.OWNED -> "No owned groups"
                     HomeTab.PARTICIPATING -> "Not participating in any groups"
                     HomeTab.INVITATIONS -> "No pending invitations"
+                    HomeTab.COMPLETED -> "No completed groups"
                 },
                 message = when (uiState.selectedTab) {
                     HomeTab.ALL -> "Create your first group to get started"
                     HomeTab.OWNED -> "You haven't created any groups yet"
                     HomeTab.PARTICIPATING -> "You're not participating in any groups"
                     HomeTab.INVITATIONS -> "You have no pending group invitations"
+                    HomeTab.COMPLETED -> "You haven't completed any groups"
                 }
             )
         } else {

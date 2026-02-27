@@ -118,7 +118,8 @@ fun GroupCard(
                     group = group,
                     onClick = onClick,
                     onAcceptInvite = onAcceptInvite,
-                    showInviteActions = showInviteActions
+                    onDeclineInvite = onDeclineInvite!!,
+                    showInviteActions = true
                 )
             }
 

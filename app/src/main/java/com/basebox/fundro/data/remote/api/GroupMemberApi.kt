@@ -19,4 +19,10 @@ interface GroupMemberApi {
         @Path("groupId") groupId: String,
         @Path("userId") userId: String
     ): Response<ApiResponse<GroupMemberResponse>>
+
+    @POST("groups/{groupId}/members/{userId}/decline")
+    suspend fun declineGroupMembership(
+        @Path("groupId") groupId: String,
+        @Path("userId") userId: String
+    ): Response<ApiResponse<GroupMemberResponse>>
 }

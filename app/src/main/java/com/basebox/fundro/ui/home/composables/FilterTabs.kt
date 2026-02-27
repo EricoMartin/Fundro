@@ -25,6 +25,7 @@ fun FilterTabs(
     myGroupsCount: Int,
     participatingCount: Int,
     invitedCount: Int,
+    completedGroups: Int,
     onTabSelected: (HomeTab) -> Unit
 ) {
     ScrollableTabRow(
@@ -43,6 +44,7 @@ fun FilterTabs(
                 HomeTab.OWNED -> myGroupsCount
                 HomeTab.PARTICIPATING -> participatingCount
                 HomeTab.INVITATIONS -> invitedCount
+                HomeTab.COMPLETED -> completedGroups
             }
 
             FilterChip(
@@ -58,6 +60,7 @@ fun FilterTabs(
                                 HomeTab.OWNED -> "Owned"
                                 HomeTab.PARTICIPATING -> "Participating"
                                 HomeTab.INVITATIONS -> "Invitations"
+                                HomeTab.COMPLETED -> "Completed"
                             },
                             style = MaterialTheme.typography.labelMedium.copy(
                                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal

@@ -5,6 +5,7 @@ import com.basebox.fundro.BuildConfig
 import com.basebox.fundro.core.notification.NotificationChannelManager
 import com.basebox.fundro.core.notification.NotificationHelper
 import com.basebox.fundro.data.remote.api.AuthApi
+import com.basebox.fundro.data.remote.api.DisbursementApi
 import com.basebox.fundro.data.remote.api.GroupApi
 import com.basebox.fundro.data.remote.api.GroupMemberApi
 import com.basebox.fundro.data.remote.api.NotificationApi
@@ -122,5 +123,11 @@ object NetworkModule {
         channelManager: NotificationChannelManager
     ): NotificationHelper {
         return NotificationHelper(context, channelManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDisbursementApi(retrofit: Retrofit): DisbursementApi {
+        return retrofit.create(DisbursementApi::class.java)
     }
 }

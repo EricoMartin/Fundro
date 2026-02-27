@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.basebox.fundro.ui.components.OfflineIndicator
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,7 +35,8 @@ import androidx.compose.ui.unit.dp
 fun HomeTopBar(
     userName: String,
     onProfileClick: () -> Unit,
-    onNotificationClick: () -> Unit
+    onNotificationClick: () -> Unit,
+    indicator: () -> Boolean
 ) {
     TopAppBar(
         title = {
@@ -69,6 +71,10 @@ fun HomeTopBar(
             }
         },
         actions = {
+            if (indicator()) {
+                Spacer(modifier = Modifier.width(16.dp))
+                OfflineIndicator(indicator.invoke())
+            }
             IconButton(onClick = onNotificationClick) {
                 BadgedBox(
                     badge = {

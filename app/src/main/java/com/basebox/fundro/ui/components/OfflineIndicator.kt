@@ -22,16 +22,14 @@ fun OfflineIndicator(
         exit = slideOutVertically() + fadeOut()
     ) {
         Surface(
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier.width(80.dp),
             color = MaterialTheme.colorScheme.errorContainer,
             tonalElevation = 4.dp
         ) {
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                    .width(76.dp)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.CloudOff,
@@ -43,7 +41,7 @@ fun OfflineIndicator(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    text = "You're offline - showing cached data",
+                    text = "Offline",
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontWeight = FontWeight.Medium
                     ),

@@ -11,9 +11,11 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     val error: String? = null,
+    val isKycVerified: Boolean = false,
     val acceptedMember: GroupMember? = null,
     val declinedMember: GroupMember? = null,
     val invitedGroups: List<Group> = emptyList(),
+    val completedGroups: List<Group> = emptyList(),
     val selectedTab: HomeTab = HomeTab.ALL
 )
 
@@ -21,5 +23,6 @@ enum class HomeTab {
     ALL,
     OWNED,
     PARTICIPATING,
-    INVITATIONS
+    INVITATIONS,
+    COMPLETED
 }

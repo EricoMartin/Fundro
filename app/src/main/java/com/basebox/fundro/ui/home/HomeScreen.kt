@@ -24,13 +24,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.basebox.fundro.ui.components.ErrorState
-import com.basebox.fundro.ui.components.OfflineIndicator
+import com.basebox.fundro.ui.components.feedback.LocalFeedbackManager
 import com.basebox.fundro.ui.components.rememberNetworkState
 import com.basebox.fundro.ui.home.composables.HomeContent
 import com.basebox.fundro.ui.home.composables.HomeTopBar
 import com.basebox.fundro.ui.theme.FundroTextSecondary
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,8 +41,12 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val isOnline by rememberNetworkState()
+    val feedbackManager = LocalFeedbackManager.current
     val logoutSuccess by viewModel.logoutSuccess.collectAsState()
 
+    LaunchedEffect(navController, feedbackManager) {
+        feedbackManager.setNavController(navController)
+    }
     // Navigate to login on logout
     LaunchedEffect(logoutSuccess) {
         if (logoutSuccess) {
@@ -56,12 +61,31 @@ fun HomeScreen(
             HomeTopBar(
                 userName = uiState.user?.fullName ?: "",
                 onProfileClick = { navController.navigate("profile") },
-                onNotificationClick = { navController.navigate("notifications") }
+                onNotificationClick = { navController.navigate("notifications") },
+                indicator = { !isOnline }
             )
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { navController.navigate("create-group") },
+                onClick = {
+                    Timber.d("User kyc status: ${uiState.user?.kycStatus}")
+                    if (uiState.user?.kycStatus?.uppercase() != "VERIFIED") {
+                        feedbackManager.showWarning(
+                            title = "Kyc Verification Required",
+                            message = "You can not create a pool (group) with Verifying your Kyc Status.",
+                            confirmText = "Verify",
+                            cancelText = "Cancel",
+                            onConfirm = {
+                                viewModel.navigateToKyc()
+                            },
+                            onCancel = {},
+                            onNavigate = {
+                            },
+                        )
+                    } else {
+                        navController.navigate("create-group")
+                    }
+                },
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -104,7 +128,7 @@ fun HomeScreen(
                 }
 
                 else -> {
-                    OfflineIndicator(isOffline = !isOnline)
+
                     HomeContent(
                         uiState = uiState,
                         viewModel = viewModel,

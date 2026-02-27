@@ -11,11 +11,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.basebox.fundro.core.security.SecureStorage
+import com.basebox.fundro.core.util.toNaira
 import com.basebox.fundro.ui.components.ErrorState
+import com.basebox.fundro.ui.components.feedback.LocalFeedbackManager
 import com.basebox.fundro.ui.group.detail.composables.GroupDetailContent
 import com.basebox.fundro.ui.theme.FundroTextSecondary
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,9 +30,24 @@ fun GroupDetailScreen(
     viewModel: GroupDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val feedbackManager = LocalFeedbackManager.current
 
     val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+
+    //Navigate to disbursement screen when disbursement is completed
+
+    LaunchedEffect(uiState.isCompleted) {
+        feedbackManager.setNavController(navController)
+        savedStateHandle?.getStateFlow("disbursement_completed", false)?.collect { completed ->
+            if (uiState.isCompleted && completed) {
+                viewModel.refresh()
+                navController.navigate("disbursement/$groupId")
+                savedStateHandle["disbursement_completed"] = false
+            }
+        }
+    }
     LaunchedEffect(savedStateHandle) {
+        feedbackManager.setNavController(navController)
         savedStateHandle?.getStateFlow("payment_completed", false)?.collect { completed ->
             if (completed) {
                 viewModel.refreshAfterPayment()
@@ -36,7 +56,7 @@ fun GroupDetailScreen(
         }
     }
 
-            // Show error snackbar
+    // Show error snackbar
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
@@ -138,8 +158,25 @@ fun GroupDetailScreen(
                         },
                         onViewDetailsClick = {
                             // TODO: Show full details
-                        }
-                    )
+                        },
+                        onReleaseFundsClick = {
+
+                            //navController.navigate("disbursement/${uiState.group?.id}")
+                            feedbackManager.setNavController(navController)
+                            feedbackManager.showWarning(
+                                title = "Release Funds?",
+                                message = "This will transfer ₦${uiState.group?.totalCollected?.toNaira()} to the recipient's account. This action cannot be undone.",
+                                confirmText = "Release Funds",
+                                cancelText = "Cancel",
+                                onConfirm = {
+                                    viewModel.navigateToDisbursement()
+                                    // Navigate to disbursement screen
+                                },
+                                onCancel = navController::popBackStack,
+                                onNavigate = {
+                                },
+                            )
+                        })
                 }
             }
         }

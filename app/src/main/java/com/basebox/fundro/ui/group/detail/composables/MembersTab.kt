@@ -12,7 +12,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.basebox.fundro.domain.model.Group
 import com.basebox.fundro.domain.model.GroupMember
+import com.basebox.fundro.domain.model.User
 import com.basebox.fundro.ui.components.EmptyState
 import com.basebox.fundro.ui.components.MemberListItem
 

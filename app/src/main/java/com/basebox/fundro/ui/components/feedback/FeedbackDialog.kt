@@ -42,6 +42,8 @@ data class FeedbackConfig(
     val onPrimaryClick: (() -> Unit)? = null,
     val onSecondaryClick: (() -> Unit)? = null,
     val onDismiss: (() -> Unit)? = null,
+    val onConfirm: (() -> Unit)? = null,
+    val onCancel: (() -> Unit)? = null,
     val onNavigate: ((NavController) -> Unit)? = null,
     var navController: NavController? = null
 )
@@ -50,6 +52,7 @@ data class FeedbackConfig(
 fun FeedbackDialog(
     config: FeedbackConfig,
     onDismiss: () -> Unit,
+    onNavigate: ((NavController) -> Unit)? = null,
     navController: NavController?
 ) {
     // Auto-dismiss logic
@@ -78,6 +81,7 @@ fun FeedbackDialog(
                 config.onDismiss?.invoke()
                 onDismiss()
             },
+            onNavigate = onNavigate,
             navController = navController
         )
     }
@@ -87,6 +91,7 @@ fun FeedbackDialog(
 private fun FeedbackDialogContent(
     config: FeedbackConfig,
     onDismiss: () -> Unit,
+    onNavigate: ((NavController) -> Unit)? = null,
     navController: NavController? = null
 ) {
     val scale = remember { Animatable(0.8f) }
@@ -168,6 +173,7 @@ private fun FeedbackDialogContent(
                                     // Log an error if the controller is missing
                                     Timber.e("NavController not set in FeedbackManager, cannot navigate.")
                                 }
+                                onNavigate
                             },
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp)
@@ -186,6 +192,7 @@ private fun FeedbackDialogContent(
                                     // Log an error if the controller is missing
                                     Timber.e("NavController not set in FeedbackManager, cannot navigate.")
                                 }
+                                onNavigate
                             },
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp),
@@ -208,6 +215,7 @@ private fun FeedbackDialogContent(
                                 // Log an error if the controller is missing
                                 Timber.e("NavController not set in FeedbackManager, cannot navigate.")
                             }
+                            onNavigate
                         },
                         modifier = Modifier
                             .fillMaxWidth()

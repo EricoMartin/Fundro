@@ -67,4 +67,10 @@ interface GroupApi {
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20
     ): Response<ApiResponse<GroupsPageResponse>>
+
+    @GET("groups/completed")
+    suspend fun getCompletedGroups(
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 20
+    ): Response<ApiResponse<GroupsPageResponse>>
 }

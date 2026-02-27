@@ -116,4 +116,39 @@ class GroupMemberRepositoryImpl @Inject constructor(
             emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
         }
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun declineGroupMembership(groupId: String, userId: String): Flow<ApiResult<GroupMember>> = flow {
+        emit(ApiResult.Loading)
+        try {
+            val response = groupMemberApi.declineGroupMembership(groupId, userId)
+            if (response.isSuccessful && response.body() != null) {
+                val memberResponse = response.body()!!.getOrThrow()
+                val member = GroupMember(
+                    id = memberResponse.id,
+                    userId = memberResponse.userId,
+                    username = memberResponse.username,
+                    fullName = memberResponse.fullName,
+                    status = memberResponse.status,
+                    expectedAmount = memberResponse.expectedAmount,
+                    paidAmount = memberResponse.paidAmount,
+                    invitedAt = memberResponse.invitedAt,
+                    joinedAt = memberResponse.joinedAt,
+                    paidAt = memberResponse.paidAt
+                )
+                val declinedCachedMember = groupMemberDao.getMemberById(member.id)
+                if (declinedCachedMember == null) {
+                    Timber.d("📦 User already declined invitation")
+                    emit(ApiResult.Success(member))
+                } else {
+                    groupMemberDao.deleteMemberById(member.id)
+                    Timber.d("💾 Removing declined member from cache: ${member.fullName}")
+                    emit(ApiResult.Success(member))
+                }
+            } else {
+                emit(ApiResult.Error("Failed to decline group membership"))
+            }
+        } catch (e: Exception) {
+            emit(ApiResult.Error("Network error: ${e.localizedMessage}"))
+        }
+    }.flowOn(Dispatchers.IO)
 }

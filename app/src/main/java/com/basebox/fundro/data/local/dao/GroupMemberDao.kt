@@ -22,6 +22,8 @@ interface GroupMemberDao {
     @Query("SELECT * FROM group_members WHERE id = :memberId")
     suspend fun getMemberById(memberId: String): GroupMemberEntity?
 
+    @Query("DELETE FROM group_members WHERE id = :memberId")
+    suspend fun deleteMemberById(memberId: String)
 
     @Query("DELETE FROM group_members WHERE group_id = :groupId")
     suspend fun deleteMembersByGroup(groupId: String)

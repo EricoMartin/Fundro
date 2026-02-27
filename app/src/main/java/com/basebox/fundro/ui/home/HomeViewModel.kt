@@ -3,13 +3,18 @@ package com.basebox.fundro.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.basebox.fundro.core.network.ApiResult
+import com.basebox.fundro.di.NavigationEvent
+import com.basebox.fundro.di.NavigationManager
+import com.basebox.fundro.domain.model.Group
 import com.basebox.fundro.domain.usecase.AcceptMembershipUseCase
 import com.basebox.fundro.domain.usecase.DeclineMembershipUseCase
+import com.basebox.fundro.domain.usecase.GetCompletedGroupsUseCase
 import com.basebox.fundro.domain.usecase.GetCurrentUserUseCase
 import com.basebox.fundro.domain.usecase.GetInvitedGroupsUseCase
 import com.basebox.fundro.domain.usecase.GetMyGroupsUseCase
 import com.basebox.fundro.domain.usecase.GetUserGroupsUseCase
 import com.basebox.fundro.domain.usecase.JoinGroupUseCase
+import com.basebox.fundro.domain.usecase.KycVerificationUseCase
 import com.basebox.fundro.domain.usecase.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -25,7 +30,10 @@ class HomeViewModel @Inject constructor(
     private val joinGroupUseCase: JoinGroupUseCase,
     private val acceptMembershipUseCase: AcceptMembershipUseCase,
     private val declineMembershipUseCase: DeclineMembershipUseCase,
-    private val getInvitedGroupsUseCase: GetInvitedGroupsUseCase
+    private val getCompletedGroupsUseCase: GetCompletedGroupsUseCase,
+    private val getInvitedGroupsUseCase: GetInvitedGroupsUseCase,
+    private val kycVerificationUseCase: KycVerificationUseCase,
+    private val navigationManager: NavigationManager,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -38,6 +46,7 @@ class HomeViewModel @Inject constructor(
         loadUserData()
         loadGroups()
         loadInvitedGroups()
+        loadCompletedGroups()
     }
 
     fun loadUserData() {
@@ -113,6 +122,35 @@ class HomeViewModel @Inject constructor(
                         Timber.e("Failed to load invited groups: ${result.message}")
                     }
                     is ApiResult.Loading -> {}
+                }
+            }
+        }
+    }
+
+//    val completedGroups: StateFlow<List<Group>> = _uiState
+//        .map { state ->
+//            // Get all groups (owned + participating)
+//            val allGroups = state.myGroups + state.participatingGroups
+//
+//            // Filter only completed groups
+//            allGroups.filter { group ->
+//                group.status.equals("COMPLETED", ignoreCase = true)
+//            }
+//        }
+//        .stateIn(
+//            scope = viewModelScope,
+//            started = SharingStarted.WhileSubscribed(5000),
+//            initialValue = emptyList()
+//        )
+
+    fun loadCompletedGroups() {
+        viewModelScope.launch {
+            getCompletedGroupsUseCase().collect { result ->
+                when (result) {
+                    is ApiResult.Success -> {
+                        _uiState.update { it.copy(completedGroups = result.data) }
+                    }
+                    else -> {}
                 }
             }
         }
@@ -232,5 +270,48 @@ class HomeViewModel @Inject constructor(
 
     fun clearError() {
         _uiState.update { it.copy(error = null) }
+    }
+
+    fun navigateToKyc() {
+        val user = uiState.value.user
+
+        viewModelScope.launch {
+            kycVerificationUseCase(
+                user?.bvn ?: "",
+                user?.bankAccountNumber ?: "",
+                user?.bankCode ?: "",
+                user?.accountHolderName ?: ""
+            ).collect { result ->
+                when (result) {
+                    is ApiResult.Success -> {
+                        if (result.data.status == "VERIFIED") {
+                            _uiState.update {
+                                it.copy(isKycVerified = true)
+                            }
+                            navigationManager.navigate(NavigationEvent.NavigateTo("create-group"))
+
+                        }
+                    }
+
+                    is ApiResult.Error -> {
+                        _uiState.update {
+                            it.copy(isKycVerified = false)
+                        }
+                        navigationManager.navigate(NavigationEvent.NavigateTo("profile/kyc"))
+
+                        Timber.e("Kyc is not verified: ${result.message}")
+                    }
+
+                    is ApiResult.Loading -> {
+                        _uiState.update {
+                            it.copy(
+                                isRefreshing = true,
+                                isLoading = true
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -21,6 +21,7 @@ import androidx.navigation.navArgument
 import com.basebox.fundro.core.payment.PaystackHelper
 import com.basebox.fundro.di.NavigationEvent
 import com.basebox.fundro.di.NavigationManager
+import com.basebox.fundro.presentation.disbursement.DisbursementScreen
 import com.basebox.fundro.ui.auth.login.LoginScreen
 import com.basebox.fundro.ui.auth.register.RegisterScreen
 import com.basebox.fundro.ui.components.feedback.LocalFeedbackManager
@@ -183,6 +184,19 @@ class MainActivity : ComponentActivity() {
                             }
                             composable("profile/kyc") {
                                 KycScreen(navController = navController)
+                            }
+
+                            composable(
+                                route = "disbursement/{groupId}",
+                                arguments = listOf(
+                                    navArgument("groupId") { type = NavType.StringType }
+                                )
+                            ) { backStackEntry ->
+                                val groupId = backStackEntry.arguments?.getString("groupId") ?: return@composable
+                                DisbursementScreen(
+                                    navController = navController,
+                                    groupId = groupId
+                                )
                             }
 
                             composable("notifications") {

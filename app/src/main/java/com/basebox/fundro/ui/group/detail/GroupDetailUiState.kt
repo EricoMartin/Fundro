@@ -11,5 +11,6 @@ data class GroupDetailUiState(
     val isRefreshing: Boolean = false,
     val error: String? = null,
     val selectedTab: DetailTab = DetailTab.DETAILS,
-    val isOwner: Boolean = false
+    val isOwner: Boolean = false,
+    val isCompleted: Boolean = false,
 )
